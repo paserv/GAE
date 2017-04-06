@@ -1,0 +1,4 @@
+cron:
+- description: Enqueue tasks for statistics
+  url: /cron
+  schedule: every 60 minutes synchronized
