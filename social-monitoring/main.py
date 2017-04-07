@@ -5,11 +5,88 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 from google.appengine.api import taskqueue
 
-import bean
-from bean import Author, Greeting, Stats, Counter, TrendingTopic, TopTen, Topic
+from bean import SocialProfileStats, SocialProfile, TopTen, Topic,\
+    SocialNetwork, SocialProfile, Test
 
 app = Flask(__name__)
 
+#ADMIN CONTROLLER
+##############################################################################
+##############################################################################
+@app.route('/admin')
+def admin():
+    user = users.get_current_user()
+    if user:
+        if users.is_current_user_admin():
+            return render_template('admin.html')
+        else:
+            return 'You are not an administrator.'
+    else:
+        return'You are not logged in.'
+    
+@app.route('/admin/add-social-network')
+def addSocialNetwork():
+    return render_template('add-social-network.html')
+
+@app.route('/admin/added-social-network', methods=['POST'])
+def addedSocialNetwork():
+    name = request.form['name']
+    socialNetwork = SocialNetwork(key = ndb.Key('SocialNetwork', name))
+    socialNetwork.name = name
+    socialNetwork.put()
+    return render_template('ok.html')
+
+@app.route('/admin/add-page-to-monitor')
+def addPageToMonitor():
+    possibleAncestors = SocialNetwork.query().order(SocialNetwork.key)
+    return render_template('add-page-to-monitor.html', socialNetworks = possibleAncestors)
+
+@app.route('/admin/added-page-to-monitor', methods=['POST'])
+def addedPageToMonitor():
+    name = request.form['name']
+    url = request.form['url']
+    ancestor = request.form['type']
+    pageToMonitor = SocialProfile(key = ndb.Key('SocialProfile', name, parent = ndb.Key('SocialNetwork', ancestor)))
+    pageToMonitor.url = url
+    pageToMonitor.put()
+    return render_template('ok.html')
+
+##############################################################################
+##############################################################################
+
+
+
+#CRON HANDLER
+##############################################################################
+##############################################################################
+@app.route('/cron')
+def cron():
+    pageToMonitor = SocialProfile.query()
+    test = []
+    for currentPage in pageToMonitor:
+        test.append(currentPage.key.parent().get().name)
+        handler = '/stats/' + str(currentPage.key.parent().get().name)
+        taskqueue.add(url = handler, params={'parent': currentPage.key, 'url': currentPage.url})
+        test.append(currentPage.key.id())
+    return render_template('test.html', test = test)
+##############################################################################
+##############################################################################
+
+
+#TASK HANDLER
+##############################################################################
+##############################################################################
+@app.route('/stats/facebook', methods=['POST'])
+def getFacebookStats():
+    parent = request.form['parent']
+    url = request.form['url']
+    stats = SocialProfileStats(parent = ndb.Key('SocialProfile', parent))
+    stats.likes = 123
+    stats.shares = 321
+    stats.put()
+    return '', 200
+##############################################################################
+##############################################################################
 
 @app.route('/')
 def hello():
@@ -17,61 +94,53 @@ def hello():
     if user:
         nickname = user.nickname()
         logout_url = users.create_logout_url('/')
-        greeting = 'Welcome, {}! (<a href="{}">sign out</a><a href="admin">Admin</a>)'.format(nickname, logout_url)
+        greeting = 'Welcome, {}! <br /><a href="{}">sign out</a><br /><a href="admin">Admin</a>'.format(nickname, logout_url)
     else:
         login_url = users.create_login_url('/')
         greeting = '<a href="{}">Sign in</a>'.format(login_url)
     return greeting
 
 
-@app.route('/admin')
-def admin():
-    user = users.get_current_user()
-    if user:
-        if users.is_current_user_admin():
-            return 'You are an administrator.'
-        else:
-            return 'You are not an administrator.'
-    else:
-        return'You are not logged in.'
+
 
 @app.route('/form')
 def form():
     return render_template('form.html')
 
-@app.route('/cron')
-def cron():
-    my_stats = Stats.query(ancestor=ndb.Key('Counter', 'facebook')).order(-Stats.date).fetch(10)
-    likes = 0
-    shares = 0
-    for currentStat in my_stats:
-        likes += currentStat.likes
-        shares += currentStat.shares
-    return render_template('submitted_form.html', likes=likes, shares=shares)
+# @app.route('/cron')
+# def cron():
+#     my_stats = Stats.query(ancestor=ndb.Key('Counter', 'facebook')).order(-Stats.date).fetch(10)
+#     likes = 0
+#     shares = 0
+#     for currentStat in my_stats:
+#         likes += currentStat.likes
+#         shares += currentStat.shares
+#     return render_template('submitted_form.html', likes=likes, shares=shares)
 
-@app.route('/test', methods=['POST'])
+@app.route('/test')
 def test():
-    task = taskqueue.add(url='/stats/facebook',  name='first-try', target='worker', params={'likes': 123, 'shares': 321})
-    
-@app.route('/stats/facebook')
-def exampleFB():
-    stats = Stats(parent = ndb.Key('Counter', 'facebook'));
-    stats.likes = 123
-    stats.shares = 321
-    stats.put()
+    task = taskqueue.add(url='/stats/facebook', params={'likes': 123, 'shares': 321})
     return render_template('form.html')
+    
+# @app.route('/stats/facebook', methods=['POST'])
+# def exampleFB():
+#     stats = SocialProfileStats(parent = ndb.Key('SocialProfileStats', 'facebook'));
+#     stats.likes = 123
+#     stats.shares = 321
+#     stats.put()
+#     return render_template('form.html')
 
 @app.route('/submitted', methods=['POST'])
 def submitted_form():
     likes = int(request.form['likes'])
     shares = int(request.form['shares'])
     
-    counterFB = Counter(key = ndb.Key('Counter', 'facebook'))
+    counterFB = SocialProfile(key = ndb.Key('SocialProfile', 'facebook'))
     counterFB.likes = likes
     counterFB.shares = shares
     counterFB.put()
     
-    stats = Stats(parent = ndb.Key('Counter', 'facebook'));
+    stats = SocialProfile(parent = ndb.Key('SocialProfile', 'facebook'));
     stats.likes = likes
     stats.shares = shares
     stats.put()
@@ -80,7 +149,7 @@ def submitted_form():
     tt.topics = [Topic(name='paolo', occurrence=10), Topic(name='servillo', occurrence=130), Topic(name='assa', occurrence=810)]
     tt.put()
     
-    my_stats = Stats.query(ancestor=ndb.Key('Counter', 'facebook')).order(-Stats.date).fetch(10)
+    my_stats = SocialProfile.query(ancestor=ndb.Key('SocialProfile', 'facebook')).order(-SocialProfile.date).fetch(10)
     for currentStat in my_stats:
         likes = likes + currentStat.likes
         shares = shares + currentStat.shares

@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>Submit a form</title>
+   <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  <body>
+    <div id="container">
+      <div class="pagetitle">
+        <h1>Add Page to Monitor</h1>
+      </div>
+      <div id="main">
+        <form method="post" action="{{ url_for('addedPageToMonitor') }}">
+          <label for="name">Name:</label>
+          <input type="text" name="name"><br />
+          <label for="url">URL:</label>
+          <input type="url" name="url"><br />
+          <label for="type">URL:</label>
+          <select name="type">
+			{% for currSN in socialNetworks %}
+    			<option value="{{ currSN.name }}">{{ currSN.name }}</option>
+			{% endfor %}
+		  </select><br />
+          <input type="submit">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

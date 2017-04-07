@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Admin Page</title>
+   <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  <body>
+    <div id="container">
+      <div class="pagetitle">
+        <h1>Menu</h1>
+      </div>
+      <div id="main">
+        <ul>
+        	<li><a href="{{ url_for('addSocialNetwork') }}">Add Social Network</a></li>
+        	<li><a href="{{ url_for('addPageToMonitor') }}">Add Page to monitor</a></li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

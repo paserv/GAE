@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title>Submit a form</title>
+   <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  <body>
+    <div id="container">
+      <div class="pagetitle">
+        <h1>Add Social Network</h1>
+      </div>
+      <div id="main">
+        <form method="post" action="{{ url_for('addedSocialNetwork') }}">
+          <label for="name">Name:</label>
+          <input type="string" name="name"><br />
+          <input type="submit">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
