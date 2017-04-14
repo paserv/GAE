@@ -1,0 +1,6 @@
+gcloud components install app-engine-php
+
+RUN CONFIGURATION
+"${workspace_loc:social-monitoring}/app.yaml" "${workspace_loc:social-monitoring}/task.yaml" --port=8888 --php_executable_path="F:\portableSoftware\google-cloud-sdk\platform\google_appengine\php\php-5.5-Win32-VC11-x86\php-cgi.exe"
+
+

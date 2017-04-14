@@ -1,0 +1,9 @@
+runtime: php55
+api_version: 1
+threadsafe: true
+service: facebook
+
+handlers:
+- url: /stats/.*
+  script: facebook_task.php
+#  login: admin

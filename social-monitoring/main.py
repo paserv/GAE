@@ -10,6 +10,19 @@ from bean import SocialProfileStats, SocialProfile, TopTen, Topic,\
 
 app = Flask(__name__)
 
+@app.route('/')
+def welcome():
+    user = users.get_current_user()
+    if user:
+        nickname = user.nickname()
+        logout_url = users.create_logout_url('/')
+        greeting = 'Welcome, {}! <br /><a href="{}">sign out</a><br /><a href="admin">Admin</a>'.format(nickname, logout_url)
+    else:
+        login_url = users.create_login_url('/')
+        greeting = '<a href="{}">Sign in</a>'.format(login_url)
+    return greeting
+
+
 #ADMIN CONTROLLER
 ##############################################################################
 ##############################################################################
@@ -62,13 +75,10 @@ def addedPageToMonitor():
 @app.route('/cron')
 def cron():
     pageToMonitor = SocialProfile.query()
-    test = []
     for currentPage in pageToMonitor:
-        test.append(currentPage.key.parent().get().name)
-        handler = '/stats/' + str(currentPage.key.parent().get().name)
-        taskqueue.add(url = handler, params={'parent': currentPage.key, 'url': currentPage.url})
-        test.append(currentPage.key.id())
-    return render_template('test.html', test = test)
+        handler = '/stats/facebook/'
+        taskqueue.add(url = handler, target='twitter', params={'parent': currentPage.key, 'url': currentPage.url})
+    return '', 200
 ##############################################################################
 ##############################################################################
 
@@ -76,29 +86,18 @@ def cron():
 #TASK HANDLER
 ##############################################################################
 ##############################################################################
-@app.route('/stats/facebook', methods=['POST'])
-def getFacebookStats():
-    parent = request.form['parent']
-    url = request.form['url']
-    stats = SocialProfileStats(parent = ndb.Key('SocialProfile', parent))
-    stats.likes = 123
-    stats.shares = 321
-    stats.put()
-    return '', 200
+# @app.route('/stats/facebook', methods=['POST'])
+# def getFacebookStats():
+#     parent = request.form['parent']
+#     url = request.form['url']
+#     stats = SocialProfileStats(parent = ndb.Key('SocialProfile', parent))
+#     stats.likes = 123
+#     stats.shares = 321
+#     stats.put()
+#     return '', 200
 ##############################################################################
 ##############################################################################
 
-@app.route('/')
-def hello():
-    user = users.get_current_user()
-    if user:
-        nickname = user.nickname()
-        logout_url = users.create_logout_url('/')
-        greeting = 'Welcome, {}! <br /><a href="{}">sign out</a><br /><a href="admin">Admin</a>'.format(nickname, logout_url)
-    else:
-        login_url = users.create_login_url('/')
-        greeting = '<a href="{}">Sign in</a>'.format(login_url)
-    return greeting
 
 
 
@@ -117,10 +116,6 @@ def form():
 #         shares += currentStat.shares
 #     return render_template('submitted_form.html', likes=likes, shares=shares)
 
-@app.route('/test')
-def test():
-    task = taskqueue.add(url='/stats/facebook', params={'likes': 123, 'shares': 321})
-    return render_template('form.html')
     
 # @app.route('/stats/facebook', methods=['POST'])
 # def exampleFB():

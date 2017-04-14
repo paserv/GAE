@@ -27,8 +27,7 @@ class Topic(ndb.Model):
 
 class TopTen(ndb.Model):
     topics = ndb.StructuredProperty(Topic, repeated=True)
-    
-    
+
 #         
 # class Author(ndb.Model):
 #     name = ndb.StringProperty(indexed=False)
