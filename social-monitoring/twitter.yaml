@@ -2,6 +2,7 @@ runtime: python27
 api_version: 1
 threadsafe: true
 service: twitter
+version: v1
 
 handlers:
 - url: /.*

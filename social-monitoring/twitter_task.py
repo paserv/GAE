@@ -8,8 +8,8 @@ app = Flask(__name__)
 #TASK HANDLER
 ##############################################################################
 ##############################################################################
-@app.route('/stats/facebook', methods=['POST'])
-def getFacebookStats():
+@app.route('/stats', methods=['POST'])
+def getStats():
     parent = request.form['parent']
     url = request.form['url']
 #     parent = 'assa'
