@@ -5,9 +5,10 @@ use \Psr\Http\Message\ResponseInterface as Response;
 require '/vendor/autoload.php';
 
 $app = new \Slim\App;
-$app->get('/hello/{name}', function (Request $request, Response $response) {
-	$name = $request->getAttribute('name');
-	$response->getBody()->write("Hello, $name");
+$app->post('/stats', function (Request $request, Response $response) {
+	$parent = $request->getParam('parent');
+	$url = $request->getParam('url');
+	$response->getBody()->write("Hello, $parent");
 	
 	return $response;
 });
