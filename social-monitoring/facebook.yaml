@@ -2,8 +2,9 @@ runtime: php55
 api_version: 1
 threadsafe: true
 service: facebook
+version: v1
 
 handlers:
-- url: /stats/.*
+- url: /.*
   script: facebook_task.php
 #  login: admin
