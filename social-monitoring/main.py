@@ -76,11 +76,11 @@ def addedPageToMonitor():
 @app.route('/cron')
 def cron():
     pageToMonitor = SocialProfile.query()
-    facebookHostname = get_hostname(module='twitter', version='v1')
-    taskqueue.add(url='/stats', target='twitter', params={'parent': 'facebook', 'url': 'url'})
-#     for currentPage in pageToMonitor:
-#         handler = '/stats/twitter'
-#         taskqueue.add(url=handler, target=facebookHostname, params={'parent': 'facebook', 'url': currentPage.url})
+    #facebookHostname = get_hostname(module='twitter', version='v1')
+    for currentPage in pageToMonitor:
+        module = currentPage.key.parent().get().name
+        url = currentPage.url
+        taskqueue.add(url='/stats', target=module, params={'parent': currentPage.key, 'url': url})
     return '', 200
 ##############################################################################
 ##############################################################################
