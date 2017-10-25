@@ -79,54 +79,35 @@ def cron():
     #facebookHostname = get_hostname(module='twitter', version='v1')
     for currentPage in pageToMonitor:
         module = currentPage.key.parent().get().name
-        url = currentPage.url
-        taskqueue.add(url='/stats', target=module, params={'parent': currentPage.key, 'url': url})
+        screen_name = currentPage.key
+        taskqueue.add(url='/stats', target=module, params={'parent': currentPage.key, 'name': screen_name})
     return '', 200
 ##############################################################################
 ##############################################################################
 
 
-#TASK HANDLER
+
+#UTILS
 ##############################################################################
 ##############################################################################
-# @app.route('/stats/facebook', methods=['POST'])
-# def getFacebookStats():
-#     parent = request.form['parent']
-#     url = request.form['url']
-#     stats = SocialProfileStats(parent = ndb.Key('SocialProfile', parent))
-#     stats.likes = 123
-#     stats.shares = 321
-#     stats.put()
-#     return '', 200
+@app.route('/view')
+def view():
+    stats = SocialProfileStats.query()
+    return render_template('test.html', stats = stats)
+
+
+@app.errorhandler(500)
+def server_error(e):
+    # Log the error and stacktrace.
+    logging.exception('An error occurred during a request.')
+    return 'An internal error occurred.', 500
 ##############################################################################
 ##############################################################################
-
-
-
-
 
 @app.route('/form')
 def form():
     return render_template('form.html')
 
-# @app.route('/cron')
-# def cron():
-#     my_stats = Stats.query(ancestor=ndb.Key('Counter', 'facebook')).order(-Stats.date).fetch(10)
-#     likes = 0
-#     shares = 0
-#     for currentStat in my_stats:
-#         likes += currentStat.likes
-#         shares += currentStat.shares
-#     return render_template('submitted_form.html', likes=likes, shares=shares)
-
-    
-# @app.route('/stats/facebook', methods=['POST'])
-# def exampleFB():
-#     stats = SocialProfileStats(parent = ndb.Key('SocialProfileStats', 'facebook'));
-#     stats.likes = 123
-#     stats.shares = 321
-#     stats.put()
-#     return render_template('form.html')
 
 @app.route('/submitted', methods=['POST'])
 def submitted_form():
@@ -154,9 +135,3 @@ def submitted_form():
         
     return render_template('submitted_form.html', likes=likes, shares=shares)
    
-
-@app.errorhandler(500)
-def server_error(e):
-    # Log the error and stacktrace.
-    logging.exception('An error occurred during a request.')
-    return 'An internal error occurred.', 500

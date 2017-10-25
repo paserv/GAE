@@ -4,14 +4,17 @@ class SocialNetwork(ndb.Model):
     name = ndb.StringProperty(indexed=False)
 
 class SocialProfile(ndb.Model):
+    id = ndb.StringProperty(indexed=True)
     url = ndb.StringProperty(indexed=False)
     likes = ndb.IntegerProperty(indexed=False)
     shares = ndb.IntegerProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
     
 class SocialProfileStats(ndb.Model):
-    likes = ndb.IntegerProperty(indexed=False)
-    shares = ndb.IntegerProperty(indexed=False)
+    statuses_count = ndb.IntegerProperty(indexed=False)
+    friends_count = ndb.IntegerProperty(indexed=False)
+    followers_count = ndb.IntegerProperty(indexed=False)
+    favourites_count = ndb.IntegerProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
 
 class Test(ndb.Model):

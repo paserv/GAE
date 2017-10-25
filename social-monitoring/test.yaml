@@ -1,0 +1,10 @@
+runtime: php55
+api_version: 1
+threadsafe: true
+service: test
+version: v1
+
+handlers:
+- url: /.*
+  script: test.php
+#  login: admin

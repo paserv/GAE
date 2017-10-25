@@ -2,9 +2,12 @@ runtime: python27
 api_version: 1
 threadsafe: true
 service: twitter
-version: v1
 
 handlers:
 - url: /.*
   script: twitter_task.app
-#  login: admin
+  login: admin
+
+libraries:
+- name: ssl
+  version: 2.7.11
