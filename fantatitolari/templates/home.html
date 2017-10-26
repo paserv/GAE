@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row"></div>
+<div class="card-panel des">
+   <div class="row">
+      <div class="input-field col l3 m12 s12 left">Info Server: </div>
+      <div id="info" class="input-field col l6 m12 s12 left">{{ ips }}</div>
+   </div>
+   <div class="row">
+      <div class="input-field col l3 m12 s12 left">Stato Monitoring: </div>
+      <div id="stopBtn" class="input-field col l6 m12 s12 left" style="display:none">Attivo</div>
+      <div id="startBtn" class="input-field col l6 m12 s12 left">NON Attivo</div>
+   </div>
+   <div class="row">
+      <div class="input-field col l3 m12 s12 left">Ultima Misurazione: </div>
+      <div id="last-measure" class="input-field col l6 m12 s12 left"></div>
+   </div>
+</div>
+{% endblock %}
