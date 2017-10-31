@@ -1,9 +1,9 @@
-import logging
-
-from flask import Flask, render_template, send_from_directory, jsonify
+from flask import Flask, render_template, send_from_directory, jsonify, request
 from google.appengine.api import users
 import os
+import csv
 
+import data
 
 app = Flask(__name__)
 
@@ -32,13 +32,11 @@ def gestisci_squadra():
     
 @app.route('/get_players')
 def get_players():
-    result = {}
-    result['Pablo (NAP)'] = ''
-    result['Servillo (NAP)'] = ''
+    result = data.get_player_list()
     return jsonify(result)
-    
+
+
 @app.errorhandler(400)
 @app.errorhandler(500)
 def server_error(e):
-    logging.exception('An error occurred during a request.')
     return "Error: " + str(e)

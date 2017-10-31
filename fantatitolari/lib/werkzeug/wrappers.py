@@ -380,7 +380,7 @@ class BaseRequest(object):
 
     def _get_stream_for_parsing(self):
         """This is the same as accessing :attr:`stream` with the difference
-        that if it finds cached data from calling :meth:`get_data` first it
+        that if it finds cached data from calling :meth:`data` first it
         will create a new stream out of the cached data.
 
         .. versionadded:: 0.9.3
@@ -464,7 +464,7 @@ class BaseRequest(object):
         # We trigger form data parsing first which means that the descriptor
         # will not cache the data that would otherwise be .form or .files
         # data.  This restores the behavior that was there in Werkzeug
-        # before 0.9.  New code should use :meth:`get_data` explicitly as
+        # before 0.9.  New code should use :meth:`data` explicitly as
         # this will make behavior explicit.
         return self.get_data(parse_form_data=True)
 
@@ -965,7 +965,7 @@ class BaseResponse(object):
             self.headers['Content-Length'] = str(len(value))
 
     data = property(get_data, set_data, doc='''
-        A descriptor that calls :meth:`get_data` and :meth:`set_data`.  This
+        A descriptor that calls :meth:`data` and :meth:`set_data`.  This
         should not be used and will eventually get deprecated.
         ''')
 

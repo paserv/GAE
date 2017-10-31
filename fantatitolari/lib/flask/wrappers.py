@@ -21,7 +21,7 @@ _missing = object()
 
 
 def _get_data(req, cache):
-    getter = getattr(req, 'get_data', None)
+    getter = getattr(req, 'data', None)
     if getter is not None:
         return getter(cache=cache)
     return req.data
