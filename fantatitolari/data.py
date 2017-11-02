@@ -1,4 +1,7 @@
 import csv
+import json
+import model
+from google.appengine.ext import ndb
 
 def get_player_list():
     result = {}
@@ -16,4 +19,17 @@ def get_player_list():
             playerLabel = row[2] + ' (' + row[1] + ')'
             result[name] = {'id': id, 'role': role, 'name': name, 'team': team, 'quot': quot, 'iconUrl': iconUrl, 'teamUrl': teamUrl, 'playerLabel': playerLabel, 'statsUrl': statsUrl }
     return result
-            
+
+def save_team(user, inputteam):
+    data = json.loads(inputteam)
+    
+    userEntity = model.User(key = ndb.Key('User', user.email()))
+    userEntity.put()
+    
+    
+    teamEntity = model.Team(key = ndb.Key('Team', data['teamName'], parent = userEntity.key))
+    teamEntity.put()
+        
+    for player in data['teamPlayers']:
+        teamplayer = model.TeamPlayer(key = ndb.Key('TeamPlayer', player, parent = teamEntity.key))
+        teamplayer.put()

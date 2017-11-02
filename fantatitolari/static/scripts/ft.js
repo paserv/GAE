@@ -10,22 +10,25 @@ function populate_players() {
 		    data: autocompleteData,
 		    limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
 		    onAutocomplete: function(val) {
-		    	if ($("[id='" + val + "']").length) {
+		    	var playerName = val.split('(')[0].trim();
+		    	var playerId = anagraficaGiocatori[playerName]['id'];
+		    	if ($("[id='" + playerId + "']").length) {
 		    		Materialize.toast("Giocatore presente", 3000);
 		    	} else {
-		    		var playerName = val.split('(')[0].trim();
-		    		var playermImgURL = anagraficaGiocatori[playerName]['iconUrl'];//"https://content.fantagazzetta.com/web/campioncini/small/" + playerName.replace(" ", "-") + ".png";
+		    		var playermImgURL = anagraficaGiocatori[playerName]['iconUrl'];
 		    		var teamImgURL = anagraficaGiocatori[playerName]['teamUrl'];
 		    		var statsUrl = anagraficaGiocatori[playerName]['statsUrl'];
-		    		var playerRole = anagraficaGiocatori[playerName]['role'];//val.split('(')[1][0];
+		    		var playerRole = anagraficaGiocatori[playerName]['role'];
 		    		var player = {};
-			    	player['id'] = anagraficaGiocatori[playerName]['id'];//val;
-			    	var chip = "<div class='row' id='" + player['id'] +"'>" +
+			    	player['id'] = playerId;
+			    	$("#modalFrame").html("<iframe src='" + statsUrl + "' class='modalStats'></iframe>");
+			    	$("#playerName").html("Statistiche " + playerName);
+			    	var chip = "<div class='row player' id='" + player['id'] +"'>" +
 									"<div class='col offset-s1 " + playerRole + "'>" +
 										"<div class='mt30'><strong>" + playerRole + "</strong></div>" + 
 									"</div>" +
-									"<div class='col s4 indigo lighten-5'>" +
-										"<img class='imgcard' src='" + playermImgURL + "'><a href='" + statsUrl  + "'><strong>" + playerName + "</strong></a>" +
+									"<div class='col s6 indigo lighten-5'>" +
+										"<img class='imgcard' src='" + playermImgURL + "'><a class='waves-effect waves-light modal-trigger' href='#modalStats'><strong>" + playerName + "</strong></a>" +
 									"</div>" +
 									"<div class='col s2 indigo lighten-5'>" +
 										"<img class='imgcard' src='" + teamImgURL + "'>" +
@@ -44,5 +47,29 @@ function populate_players() {
 
 function remove_player(player) {
 	$("[id='" + player['id'] + "']").remove();
+}
+
+function saveTeam() {
+	if ($("#teamName").val()) {
+		var result = {};
+		result['teamName'] = $("#teamName").val();
+		var teamPlayers = [];
+		$( ".player" ).each(function( index ) {
+			teamPlayers.push($( this ).attr('id'));
+		});
+		result['teamPlayers'] = teamPlayers;
+		$.ajax({
+		  type: "POST",
+		  url: 'save_team',
+		  contentType : 'application/json',
+		  data: JSON.stringify(result),
+		  success: function( res, status, xhr ) {
+			  Materialize.toast(res, 3000);
+		  },
+		});
+	} else {
+		Materialize.toast("Inserisci il nome squadra", 3000);
+	}
+
 }
 

@@ -35,6 +35,10 @@ def get_players():
     result = data.get_player_list()
     return jsonify(result)
 
+@app.route('/save_team', methods=['POST'])
+def save_team():
+    data.save_team(users.get_current_user(), request.data)
+
 
 @app.errorhandler(400)
 @app.errorhandler(500)
