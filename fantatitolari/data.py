@@ -33,3 +33,22 @@ def save_team(user, inputteam):
     for player in data['teamPlayers']:
         teamplayer = model.TeamPlayer(key = ndb.Key('TeamPlayer', player, parent = teamEntity.key))
         teamplayer.put()
+        
+def get_teams(user):
+    result = {}
+    data = []
+    result['data'] = data
+    teams = model.Team.query(ancestor=ndb.Key('User', user.email()))
+    for team in teams:
+        result['data'].append(team.key.get())
+    return result
+        
+
+def get_team_players(user, name):
+    return "NON SO"
+    
+    
+    
+    
+    
+    

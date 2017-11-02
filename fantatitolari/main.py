@@ -1,7 +1,6 @@
 from flask import Flask, render_template, send_from_directory, jsonify, request
 from google.appengine.api import users
 import os
-import csv
 
 import data
 
@@ -38,6 +37,11 @@ def get_players():
 @app.route('/save_team', methods=['POST'])
 def save_team():
     data.save_team(users.get_current_user(), request.data)
+    return "Squadra Salvata con successo"
+
+@app.route('/get_teams')
+def get_teams():
+    return str(data.get_teams(users.get_current_user()))
 
 
 @app.errorhandler(400)
