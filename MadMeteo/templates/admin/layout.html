@@ -8,6 +8,7 @@
       <link type="text/css" rel="stylesheet" href="/static/content/jquery-ui.structure.min.css">
       <link type="text/css" rel="stylesheet" href="/static/content/jquery-ui.theme.min.css">
       <link type="text/css" rel="stylesheet" href="/static/content/site.css" />
+      <link type="text/css" rel="stylesheet" href="/static/content/admin.css" />
       <link type="text/css" rel="stylesheet" href="/static/content/jquery.dynatable.css" />
       <meta name="theme-color" content="#ffffff">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -24,22 +25,45 @@
       <script type="text/javascript" src="/static/scripts/jquery-ui.min.js"></script>
       <script type="text/javascript" src="/static/scripts/materialize.min.js"></script>
       <script type="text/javascript" src="/static/scripts/mm.js"></script>
-      <script type="text/javascript" src="/static/scripts/bydonpablo.js"></script>
    </head>
    <body>
       <header>
-         <nav class="top-nav blue lighten-5">
-	         <div class="nav-wrapper">
-                  <a href="/" class="brand-logo right" style="margin-right: 10px"><i class="material-icons">wb_sunny</i></a>
-             </div>
-        </nav>
+         <nav class="top-nav blue lighten-3">
+            <div class="nav-wrapper">
+               <a href="/" class="brand-logo right" style="margin-right: 10px"><img class="responsive-img" width="100px" style="margin-top:10px" src="/static/img/logo.png"></img></a>
+               <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons" style="color:blue">menu</i></a>
+            </div>
+         </nav>
+         <ul id="nav-mobile" class="side-nav fixed" style="transform: translateX(-100%);">
+            <li><div class="user-view center"><a href="/"><i class="material-icons large-icon">home</i></img></a></div></li>
+            <li><div class="divider"></div></li>
+            
+            <li class="no-padding blue lighten-3">
+        		<!-- 
+        		<ul class="collapsible collapsible-accordion">
+          			<li>
+            			<a class="collapsible-header"><img class="responsive-img" width="40px" style="vertical-align:middle" src="/static/img/gestisci_squadre.png">Gestisci Squadre<i class="material-icons right">arrow_drop_down</i></a>
+            			<div class="collapsible-body">
+              				<ul>
+                				<li class="no-padding blue lighten-5"><a href="/cs">Carica Lista Comuni<i class="material-icons">add_circle_outline</i></a></li>
+                				<li class="no-padding blue lighten-5"><a href="/ms">Modifica Squadra<i class="material-icons">mode_edit</i></a></li>
+              				</ul>
+            			</div>
+          			</li>
+        		</ul>
+        		 -->
+      		</li>          
+            <li class="no-padding blue lighten-3"><a class="collapsible-header" href="/admin/load_list"><i class="material-icons">file_upload</i>Carica Lista</a></li>
+            <li><div class="divider"></div></li>
+            <li class="no-padding blue lighten-3"><a class="collapsible-header" href="{{ logout_url }}"><i class="material-icons">directions_run</i>Log out</a></li>
+         </ul>
       </header>
       <main>
          <h3>{{ title }}<i class="material-icons left">{{ icon }}</i></h3>
          {% block content %}{% endblock %}
       </main>
       <footer class="page-footer style-footer white">
-         <div style="background-color:#1565C0;height:1px"></div>
+         <div class=" blue lighten-3" style="height:1px"></div>
          <div class="container" style="width: 95%;">
             <div class="footer-copyright container-footer style-footer-copyright black-text right white bold">
                <div class="right">
@@ -51,14 +75,14 @@
       </footer>
       <script>
          $(document).ready(function(){
-            //$(".button-collapse").sideNav();
-            //$('.collapsible').collapsible();
-            //$(".dropdown-button").dropdown();
-            //$('select').material_select();
-            //$('.modal').modal({
+            $(".button-collapse").sideNav();
+            $('.collapsible').collapsible();
+            $(".dropdown-button").dropdown();
+            $('select').material_select();
+            $('.modal').modal({
             	//startingTop: '1%', // Starting top style attribute
                 //endingTop: '10%', // Ending top style attribute
-            //});
+            });
          });
       </script>
    </body>

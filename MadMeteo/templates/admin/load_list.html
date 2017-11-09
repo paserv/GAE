@@ -1,0 +1,18 @@
+{% extends "admin/layout.html" %}
+{% block content %}
+<div class="card-panel des">
+	    <form class="col s12" method="POST" action="/admin/enqueue_comuni">
+	      <div class="row">
+	        <div class="input-field col s12">
+	          <textarea id="csv" name="csv" class="materialize-textarea"></textarea>
+	          <label for="csv">Incolla qui la lista dei comuni</label>
+	        </div>
+	      </div>
+	      <div class="row">
+   			<button class="btn waves-effect waves-light right des indigo darken-4" type="submit">Salva
+   				<i class="material-icons right">save</i>
+   			</button>
+		  </div>
+	    </form>
+</div>			
+{% endblock %}

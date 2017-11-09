@@ -1,6 +1,7 @@
-from flask import Flask, render_template, send_from_directory, jsonify, request
-from google.appengine.api import users
 import os
+import json
+from flask import Flask, render_template, send_from_directory, request, jsonify
+from meteoit.meteoit_impl import ImplMeteoIt
 
 app = Flask(__name__)
 
@@ -10,13 +11,16 @@ def favicon():
 
 @app.route('/')
 def home():
-    user = users.get_current_user()
-    if user:
-        logout_url = users.create_logout_url('/')
-        return render_template('home.html', logout_url = logout_url, title="Home Page", icon = "home")
-    else:
-        login_url = users.create_login_url('/')
-        return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
+    return render_template('home.html', title="Home Page", icon = "home")
+
+@app.route('/test', methods=['GET'])
+def get_comuni():
+    comune = request.args['comune']
+    day = request.args['giorno']
+    meteo_it = ImplMeteoIt()
+    #result = meteo_it.get_query_url(comune, day)
+    result = meteo_it.get_meteo_by_day(comune, day)
+    return json.dumps(result)
 
 @app.errorhandler(400)
 @app.errorhandler(500)
