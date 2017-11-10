@@ -1,9 +1,6 @@
 from json import JSONEncoder
 
 class DayMeteo(JSONEncoder):
-    def default(self, o):
-            return o.__dict__  
-        
     giorno = None
     ora = None
     urlIcona = None

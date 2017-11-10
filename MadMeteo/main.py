@@ -13,6 +13,18 @@ def favicon():
 def home():
     return render_template('home.html', title="Home Page", icon = "home")
 
+#@app.route('/istat_code/<comune>', methods=['POST'])
+#def istat_code(comune):
+#    return dc.get_istat_code(comune)
+
+@app.route('/prev_meteo/<comune>/<giorno>', methods=['POST'])
+def prev_meteo(comune, giorno):
+    result = {}
+    meteo_it = ImplMeteoIt()
+    meteoit_result = meteo_it.get_meteo_by_day(comune, giorno)
+    result['meteoit'] = meteoit_result
+    return jsonify(result)
+
 @app.route('/test', methods=['GET'])
 def get_comuni():
     comune = request.args['comune']
@@ -20,7 +32,7 @@ def get_comuni():
     meteo_it = ImplMeteoIt()
     #result = meteo_it.get_query_url(comune, day)
     result = meteo_it.get_meteo_by_day(comune, day)
-    return json.dumps(result)
+    return jsonify(json.dumps(result))
 
 @app.errorhandler(400)
 @app.errorhandler(500)

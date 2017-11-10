@@ -8,7 +8,26 @@
 			<label for="search">Cerca</label>
 		</div>
 	</div>
+	
+	<table border="1">
+         <thead>
+            <tr>
+               <td>Ora </td>
+               <td>Tempo </td>
+            </tr> 
+         </thead>
+         <tbody jput="users" jput-jsondata='[]'>
+            <tr>
+               <td>{{ora}}</td>
+               <td>{{label}}</td>
+            </tr>
+         </tbody>
+    </table>
+	
 </div>
+
+
+
 <script>
 $(document).ready(function(){
 	populate_list();
