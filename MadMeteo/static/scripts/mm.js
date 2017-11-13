@@ -7983,8 +7983,8 @@ function populate_list() {
 		limit: 5,
 		onAutocomplete: function(val) {
 			comune = val.split(' ')[0];
-			$.post( "prev_meteo/" + comune + "/" + 1, function( data ) {
-				render_page(data);
+			$.post( "meteoit/" + comune + "/" + 1, function( data ) {
+				render_page(data['meteoit']);
 			});
 		},
 		minLength: 1,
@@ -7993,10 +7993,32 @@ function populate_list() {
 
 
 function render_page(data) {
-	var json = [{"ora": "name1","label":"email1@domain.com"},{"ora": "name2","label":"email2@domain.com"}];
-	jPut.users.data = json;
-	var user=Object();
-	user['ora']="aaaaaaaa";
-    user['label']="bbbbbbb";
-	jPut.users.append(user);
+	var meteoitTable = createTable($("#meteoit"), data);
+	$("#meteoit").show();
+}
+
+
+function createTable(container, data) {
+    var table = $("<table/>").addClass('striped');
+    
+    var head = $("<thead/>");
+    var row = $("<tr/>");
+    $.each(data[0], function(colIndex, c) { 
+    	row.append($("<th/>").text(c));
+    });
+    head.append(row);
+    table.append(head);
+    
+    var body = $("<tbody/>");
+    $.each(data, function(rowIndex, r) {
+        if (rowIndex > 0) {
+        	var row = $("<tr/>");
+            $.each(r, function(colIndex, c) { 
+            	row.append($("<td/>").text(c));
+            });
+        }
+        body.append(row);
+    });
+    table.append(body);
+    return container.append(table);
 }

@@ -23,6 +23,7 @@ class ImplMeteoIt(AbstractMeteo):
         
     def get_meteo_by_day(self, comune, day):
         result = []
+        result.append(DayMeteo.labels());
         try:
             url = self.get_query_url(comune, day)
             request = urlfetch.fetch(url)
@@ -63,8 +64,8 @@ class ImplMeteoIt(AbstractMeteo):
                     currMeteo.umidita = umidita[i + 1].get_text(strip=True).strip()
                     currMeteo.pressione = pressione[i + 1].get_text(strip=True).strip()
                     #currMeteo.uv = uv[i + 1]['data-info']
-                    result.append(currMeteo.__dict__)
-        finally:
+                    result.append(currMeteo.toList())
+        finally:             
             return result
     
     def get_meteo_week(self, comune, when):

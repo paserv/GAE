@@ -17,7 +17,7 @@ def home():
 #def istat_code(comune):
 #    return dc.get_istat_code(comune)
 
-@app.route('/prev_meteo/<comune>/<giorno>', methods=['POST'])
+@app.route('/meteoit/<comune>/<giorno>', methods=['POST'])
 def prev_meteo(comune, giorno):
     result = {}
     meteo_it = ImplMeteoIt()
