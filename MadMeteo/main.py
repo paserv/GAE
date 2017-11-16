@@ -19,11 +19,9 @@ def home():
 
 @app.route('/meteoit/<comune>/<giorno>', methods=['POST'])
 def prev_meteo(comune, giorno):
-    result = {}
     meteo_it = ImplMeteoIt()
     meteoit_result = meteo_it.get_meteo_by_day(comune, giorno)
-    result['meteoit'] = meteoit_result
-    return jsonify(result)
+    return jsonify(meteoit_result)
 
 @app.route('/test', methods=['GET'])
 def get_comuni():

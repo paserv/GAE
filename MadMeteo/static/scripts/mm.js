@@ -7984,39 +7984,73 @@ function populate_list() {
 		onAutocomplete: function(val) {
 			comune = val.split(' ')[0];
 			$.post( "meteoit/" + comune + "/" + 1, function( data ) {
-				render_page(data['meteoit']);
+				render_page(data);
 			});
 		},
 		minLength: 1,
 	});
 }
 
-
+var header = [{"key": "ora", "label": "Ora"},
+			  {"key": "svg", "label": ""},
+			  {"key": "label", "label": "Previsione"},
+			  {"key": "temperatura", "label": "Temperatura"},
+			  {"key": "precipitazioni", "label": "Precipitazioni"},
+			  {"key": "vento", "label": "Vento"},
+			  {"key": "umidita", "label": "Umidita"},
+			  {"key": "pressione", "label": "Pressione"}
+			  ]; 
+	
 function render_page(data) {
-	var meteoitTable = createTable($("#meteoit"), data);
+	$("#meteoitdefs").html(data['svgdefs']);
+	$("#meteoit").html("");
+	var meteoitTable = createTable($("#meteoit"), data['meteoit']);
 	$("#meteoit").show();
 }
 
 
 function createTable(container, data) {
+	var orderedData = [];
+	
+	var currHeader = [];
+	$.each(header, function( headerValIndex, headerVal ) {
+		currHeader.push(headerVal['label']);
+	});
+	
+	$.each(data, function( dataValIndex, dataVal ) {
+		var currentData = [];
+		$.each(header, function( headerValIndex, headerVal ) {
+			curr = dataVal[headerVal['key']];
+			//if (curr.indexOf('svg')) {
+			//	curr = curr.replace('/&lt;', '<');
+			//	curr = curr.replace('/&gt;', '>');
+			//}
+			currentData.push(curr);
+		});
+		orderedData.push(currentData);
+	});
+	
+	
     var table = $("<table/>").addClass('striped');
     
     var head = $("<thead/>");
     var row = $("<tr/>");
-    $.each(data[0], function(colIndex, c) { 
+    $.each(currHeader, function(colIndex, c) { 
     	row.append($("<th/>").text(c));
     });
     head.append(row);
     table.append(head);
     
     var body = $("<tbody/>");
-    $.each(data, function(rowIndex, r) {
-        if (rowIndex > 0) {
-        	var row = $("<tr/>");
-            $.each(r, function(colIndex, c) { 
-            	row.append($("<td/>").text(c));
-            });
-        }
+    $.each(orderedData, function(rowIndex, r) {
+     	var row = $("<tr/>");
+         $.each(r, function(colIndex, c) { 
+         	if (c.indexOf('svg') > 0) {
+         		row.append($("<td/>")).append(c);
+         	} else {
+         		row.append($("<td/>").text(c));
+         	}
+         });
         body.append(row);
     });
     table.append(body);

@@ -9,6 +9,7 @@ class DayMeteo():
     umidita = None
     pressione = None
     uv = None
+    svg = None
 
     @staticmethod
     def labels():
@@ -23,4 +24,5 @@ class WeekMeteo():
     urlIcona = None
     minime = None
     massime = None
+    svg = None
         
