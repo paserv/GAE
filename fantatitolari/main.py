@@ -1,5 +1,5 @@
 from flask import Flask, render_template, send_from_directory, jsonify, request
-from google.appengine.api import users
+from google.appengine.api import users, taskqueue
 import os
 
 import data
@@ -24,7 +24,8 @@ def home():
 def gestisci_squadra():
     user = users.get_current_user()
     if user:
-        return render_template('crea_squadra.html', title="Crea Squadra", icon = "home")
+        teams = data.get_teams(user)
+        return render_template('gestisci_squadra.html', title="Crea/Modifica Squadra", icon = "home", teams=teams)
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
@@ -43,8 +44,31 @@ def save_team():
 def get_teams():
     return str(data.get_teams(users.get_current_user()))
 
+@app.route('/get_team_players/<team>')
+def get_team_players(team):
+    result = data.get_team_players(users.get_current_user(), team)
+    return jsonify(result)
+
+@app.route('/delete_team/<team>', methods=['DELETE'])
+def delete_team(team):
+    result = data.delete_team(users.get_current_user(), team)
+    return 'Eliminazione squadra riuscita con successo', 200
 
 @app.errorhandler(400)
 @app.errorhandler(500)
 def server_error(e):
     return "Error: " + str(e)
+
+
+
+
+##### ADMIN #####
+@app.route('/enqueue_load_players')
+def enqueue_load_players():
+    taskqueue.add(url='/load_players')
+    return '', 200
+
+@app.route('/load_players', methods=['POST'])
+def load_players():
+    data.load_players()
+    return '', 200
