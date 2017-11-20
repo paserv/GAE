@@ -81,10 +81,14 @@ def server_error(e):
 
 ##### Data Scraper #####
 @app.route('/gazzetta/<giornata>')
-def get_titolari_fg(giornata):
+def get_titolari_gazzetta(giornata):
     result = scraper.gazzetta(giornata)
     return jsonify(result);
 
+@app.route('/fantagazzetta/<giornata>')
+def get_titolari_fantagazzetta(giornata):
+    result = scraper.fantagazzetta(giornata)
+    return jsonify(result);
 
 
 ##### ADMIN #####

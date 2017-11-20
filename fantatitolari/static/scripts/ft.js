@@ -160,9 +160,29 @@ function getChip(id, redazione) {
 }
 
 function getTitolari() {
+	$.get( "gazzetta/" + giornata, function( data ) {
+		var titolari = data['titolari'];
+		$.each(titolari, function( index, value ) {
+			$("#" + value['name'] + "_" + value['team'] + "_gaz").addClass('green');
+		});
+		
+	});
+	
+	$.get( "fantagazzetta/" + giornata, function( data ) {
+		var titolari = data['titolari'];
+		$.each(titolari, function( index, value ) {
+			$("#" + value['name'] + "_" + value['team'] + "_fg").addClass('green');
+		});
+		
+	});
+}
+
+function loadTeam() {
+	$("#titolari_btn").attr("disabled", true);
 	$('#players').html("");
-	if($( "#teamName" ).val() != "") {
+	if($( "#teamName" ).val() != "" && $( "#giornata" ).val() != "") {
 		var team = $( "#teamName" ).val();
+		var giornata = $( "#giornata" ).val();
 		$.get( "get_team_players/" + team, function( data ) {
 			team_players = data['players'];
 			var ordered_players = orderPlayers(team_players);
@@ -172,12 +192,10 @@ function getTitolari() {
 				var chip = createTitolariChip(ordered_players[i]['id'], ordered_players[i]['role'], ordered_players[i]['iconUrl'], ordered_players[i]['name'], ordered_players[i]['statsUrl'], ordered_players[i]['teamUrl'], ordered_players[i]['team']);
 		    	$("#players").append(chip);
 			}
-			
-			$.get( "gazzetta/10", function( data ) {
-				$("#buffon_juventus_gaz").addClass( "green" );
-			});
-			
+			$("#titolari_btn").removeAttr("disabled");
 		});
+	} else {
+		Materialize.toast("Inserisci il nome squadra o la giornata", 3000);
 	}
 }
 

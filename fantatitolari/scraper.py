@@ -1,6 +1,11 @@
 
-def gazzetta():
+def gazzetta(giornata):
     result = {}
-    result['data'] = [{'name': 'Buffon', 'team': 'Juventus'}];
+    result['titolari'] = [{'name': 'buffon', 'team': 'juventus'}];
     return result
     
+    
+def fantagazzetta(giornata):
+    result = {}
+    result['titolari'] = [{'name': 'acquah', 'team': 'torino'}];
+    return result
