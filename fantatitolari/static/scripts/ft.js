@@ -25,20 +25,7 @@ function populate_players() {
 			    	player['id'] = playerId;
 			    	$("#modalFrame").html("<iframe src='" + statsUrl + "' class='modalStats'></iframe>");
 			    	$("#playerName").html("Statistiche " + playerName);
-			    	var chip = "<div class='row player' id='" + player['id'] +"'>" +
-									"<div class='col offset-s1 " + playerRole + "'>" +
-										"<div class='mt30'><strong>" + playerRole + "</strong></div>" + 
-									"</div>" +
-									"<div class='col s6 indigo lighten-5'>" +
-										"<img class='imgcard' src='" + playermImgURL + "'><a class='waves-effect waves-light modal-trigger' href='#modalStats'><strong>" + playerName + "</strong></a>" +
-									"</div>" +
-									"<div class='col s2 indigo lighten-5'>" +
-										"<img class='imgcard' src='" + teamImgURL + "'>" +
-									"</div>" +
-									"<div class='col indigo lighten-5'>" +
-										"<i class='imgcard material-icons curpoint right' onclick='remove_player(" +  JSON.stringify(player) + ")'>close</i>" +
-								"</div>" +
-								"</div>";
+			    	var chip = createSimpleChip(player['id'], playerRole, playermImgURL, playerName, statsUrl, teamImgURL);
 			    	$("#players").append(chip);
 		    		}
 		    	},
@@ -107,34 +94,90 @@ function getTeamPlayers() {
 	if($( "#teamName" ).val() != "") {
 		var team = $( "#teamName" ).val();
 		$.get( "get_team_players/" + team, function( data ) {
-			team_players = data['players'];
-			$.each(team_players, function( index, value ) {
+			var team_players = data['players'];
+			var ordered_players = orderPlayers(team_players);
+			for (i = 0; i < ordered_players.length; i++) {
 				var player = {};
-				player['id'] = value['id'];
-		    	$("#modalFrame").html("<iframe src='" + value['statsUrl'] + "' class='modalStats'></iframe>");
-		    	$("#playerName").html("Statistiche " + value['name']);
-		    	var chip = "<div class='row player' id='" + value['id'] +"'>" +
-								"<div class='col offset-s1 " + value['role'] + "'>" +
-									"<div class='mt30'><strong>" + value['role'] + "</strong></div>" + 
-								"</div>" +
-								"<div class='col s6 indigo lighten-5'>" +
-									"<img class='imgcard' src='" + value['iconUrl'] + "'><a class='waves-effect waves-light modal-trigger' href='#modalStats'><strong>" + value['name'] + "</strong></a>" +
-								"</div>" +
-								"<div class='col s2 indigo lighten-5'>" +
-									"<img class='imgcard' src='" + value['teamUrl'] + "'>" +
-								"</div>" +
-								"<div class='col indigo lighten-5'>" +
-									"<i class='imgcard material-icons curpoint right' onclick='remove_player(" +  JSON.stringify(player) + ")'>close</i>" +
-							"</div>" +
-							"</div>";
+				player['id'] = ordered_players[i]['id'];
+				var chip = createSimpleChip(ordered_players[i]['id'], ordered_players[i]['role'], ordered_players[i]['iconUrl'], ordered_players[i]['name'], ordered_players[i]['statsUrl'], ordered_players[i]['teamUrl']);
 		    	$("#players").append(chip);
-				});
+			}
 		});
 		$("#delete_btn").removeAttr("disabled");
 		$("#edit_btn").removeAttr("disabled");
+		$("#search").removeAttr("disabled");
 	} else {
-		$("#delete_btn").attr("disabled", true);;
-		$("#edit_btn").attr("disabled", true);;
+		$("#delete_btn").attr("disabled", true);
+		$("#edit_btn").attr("disabled", true);
+		clearInput();
+		$("#search").attr("disabled", true);
+	}
+}
+
+function createSimpleChip(id, role, iconUrl, name, statsUrl, teamUrl) {
+	var player = {};
+	player['id'] = id;
+	var chip = 
+		"<div class='row' id='" + id +"'>" +
+			"<div class='col s1 " + role + "'>" +
+				"<div class='mt30'><strong>" + role + "</strong></div>" + 
+			"</div>" +
+			"<div class='col s10 indigo lighten-5'>" +
+				"<img class='imgcard' src='" + iconUrl + "'>" +
+				"<img class='imgcard teamicon' src='" + teamUrl + "'><a class='waves-effect waves-light modal-trigger' onclick='openModal(\"" + name + "\",\"" + statsUrl + "\")'><strong>" + name + "</strong></a>" +
+			"</div>" +
+			"<div class='col s1 indigo lighten-5'>" +
+				"<i class='imgcard material-icons curpoint right' onclick='remove_player(" +  JSON.stringify(player) + ")'>close</i>" +
+			"</div>" +
+		"</div>";
+	return chip;
+}
+
+function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
+	var myId = name + "_" + team;
+	var chip = 
+		"<div class='row ' id='" + id +"'>" +
+			"<div class='col l1 m1 s1 " + role + "'>" +
+				"<div class='mt30'><strong>" + role + "</strong></div>" + 
+			"</div>" +
+			"<div class='col l5 m5 s11 indigo lighten-5'>" +
+				"<img class='imgcard' src='" + iconUrl + "'>" +
+				"<img class='imgcard teamicon' src='" + teamUrl + "'><a class='waves-effect waves-light modal-trigger' onclick='openModal(\"" + name + "\",\"" + statsUrl + "\")'><strong>" + name + "</strong></a>" +
+			"</div>" +
+			"<div class='col l4 m3 s12 center'>" +
+				getChip(myId, "Fg") + getChip(myId, "Gaz") + getChip(myId, "CdS") + getChip(myId, "Sky") +
+			"</div>" +
+			"<div class='col l2 m3 s12 center'>" +
+				"Atalanta - Juventus" + 
+			"</div>" +
+		"</div>";
+	return chip;
+}
+
+function getChip(id, redazione) {
+	var chipId = (id + "_" + redazione).toLowerCase();
+	return "<div id='" + chipId + "' class='chip mt3 center'>" + redazione +"</div>";
+}
+
+function getTitolari() {
+	$('#players').html("");
+	if($( "#teamName" ).val() != "") {
+		var team = $( "#teamName" ).val();
+		$.get( "get_team_players/" + team, function( data ) {
+			team_players = data['players'];
+			var ordered_players = orderPlayers(team_players);
+			for (i = 0; i < ordered_players.length; i++) {
+				var player = {};
+				player['id'] = ordered_players[i]['id'];
+				var chip = createTitolariChip(ordered_players[i]['id'], ordered_players[i]['role'], ordered_players[i]['iconUrl'], ordered_players[i]['name'], ordered_players[i]['statsUrl'], ordered_players[i]['teamUrl'], ordered_players[i]['team']);
+		    	$("#players").append(chip);
+			}
+			
+			$.get( "gazzetta/10", function( data ) {
+				$("#buffon_juventus_gaz").addClass( "green" );
+			});
+			
+		});
 	}
 }
 
@@ -154,6 +197,37 @@ function deleteTeam() {
 	}	
 }
 
+function openModal(name, statsUrl) {
+	$("#playerName").html("Statistiche " + name);
+	$("#modalFrame").html("<iframe src='" + statsUrl + "' class='modalStats'></iframe>");
+	$("#modalStats").modal('open');
+}
+
 function clearInput() {
 	$("#search").val(""); 
+}
+
+function orderPlayers(players) {
+	result = [];
+	$.each(players, function( index, value ) {
+		if (value['role'] == 'P') {
+			result.push(value);
+		}
+	});
+	$.each(players, function( index, value ) {
+		if (value['role'] == 'D') {
+			result.push(value);
+		}
+	});
+	$.each(players, function( index, value ) {
+		if (value['role'] == 'C') {
+			result.push(value);
+		}
+	});
+	$.each(players, function( index, value ) {
+		if (value['role'] == 'A') {
+			result.push(value);
+		}
+	});
+	return result;
 }

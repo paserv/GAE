@@ -3,6 +3,7 @@ from google.appengine.api import users, taskqueue
 import os
 
 import data
+import scraper
 
 app = Flask(__name__)
 
@@ -24,8 +25,7 @@ def home():
 def crea_squadra():
     user = users.get_current_user()
     if user:
-        teams = data.get_teams(user)
-        return render_template('crea_squadra.html', title="Crea Squadra", icon = "home", teams=teams)
+        return render_template('crea_squadra.html', title="Crea Squadra", icon = "home")
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
@@ -39,7 +39,17 @@ def modifica_squadra():
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
-  
+
+@app.route('/tit')
+def titolari():
+    user = users.get_current_user()
+    if user:
+        teams = data.get_teams(user)['teams']
+        return render_template('titolari.html', title="Verifica Titolari", icon = "home", teams=teams)
+    else:
+        login_url = users.create_login_url('/')
+        return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
+    
 @app.route('/get_players')
 def get_players():
     result = data.get_player_list()
@@ -61,7 +71,7 @@ def get_team_players(team):
 
 @app.route('/delete_team/<team>', methods=['DELETE'])
 def delete_team(team):
-    result = data.delete_team(users.get_current_user(), team)
+    data.delete_team(users.get_current_user(), team)
     return 'Eliminazione squadra riuscita con successo', 200
 
 @app.errorhandler(400)
@@ -69,6 +79,11 @@ def delete_team(team):
 def server_error(e):
     return "Error: " + str(e)
 
+##### Data Scraper #####
+@app.route('/gazzetta/<giornata>')
+def get_titolari_fg(giornata):
+    result = scraper.gazzetta(giornata)
+    return jsonify(result);
 
 
 

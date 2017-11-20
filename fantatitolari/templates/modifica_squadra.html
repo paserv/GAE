@@ -17,7 +17,7 @@
 	<div class="row" id="addplayer" style="display:none">
 		<div class="input-field col l12 m12 s12">
 			<i class="material-icons prefix">search</i>
-			<input id="search" type="text" class="autocomplete" onfocus="clearInput()">
+			<input disabled id="search" type="text" class="autocomplete" onfocus="clearInput()">
 			<label for="search">Aggiungi Giocatore</label>
 		</div>
 	</div>
@@ -35,9 +35,11 @@
 		  </div>
 	</div>
 	<div class="row">
-		<div class="input-field col l12 m12 s12">
+		<div class="input-field col l6 m6 s12">
+			<a disabled id="edit_btn" class="right waves-effect waves-light btn indigo" onclick="modificaSquadra()"><i class="material-icons right">edit</i>Modifica</a>
+		</div>
+		<div class="input-field col l6 m6 s12">
 			<a disabled id="delete_btn" class="right waves-effect waves-light btn indigo modal-trigger" href="#modal"><i class="material-icons right">delete</i>Elimina</a>
-			<a disabled id="edit_btn" class="right waves-effect waves-light btn indigo mr20" onclick="modificaSquadra()"><i class="material-icons right">edit</i>Modifica</a>
 		</div>
 	</div>
 </div>
@@ -61,16 +63,6 @@
 </div>
 </div>
 
-<div id="modalStats" class="modal">
-    <div class="modal-content">
-      <h4 id="playerName" class="blue-text"></h4>
-      <div id="modalFrame"></div>
-    </div>
-    <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Chiudi</a>
-    </div>
-  </div>
-  
 <script>
 $(document).ready(function(){
 	populate_players();

@@ -31,7 +31,7 @@
          <nav class="top-nav blue lighten-5">
             <div class="nav-wrapper">
                <a href="/" class="brand-logo right" style="margin-right: 10px"><img class="responsive-img" width="100px" style="margin-top:10px" src="/static/img/logo.png"></img></a>
-               <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons" style="color:blue">menu</i></a>
+               <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="material-icons" style="color:#3f51b5">menu</i></a>
             </div>
          </nav>
          <ul id="nav-mobile" class="side-nav fixed" style="transform: translateX(-100%);">
@@ -51,16 +51,21 @@
           			</li>
         		</ul>
       		</li>
-      		  
-      		 <!-- 
-      		<li class="no-padding blue lighten-5"><a class="collapsible-header" href="cs"><img class="responsive-img" width="40px" style="vertical-align:middle" src="/static/img/gestisci_squadre.png">Gestisci Squadre</a></li>         
-             -->
             <li class="no-padding blue lighten-5"><a class="collapsible-header" href="/tit"><img class="responsive-img" width="40px" style="vertical-align:middle" src="/static/img/titolari.png">Titolari</a></li>
          </ul>
       </header>
       <main>
          <h3>{{ title }}<i class="material-icons left">{{ icon }}</i></h3>
          {% block content %}{% endblock %}
+         <div id="modalStats" class="modal">
+		    <div class="modal-content">
+		      <h4 id="playerName" class="blue-text"></h4>
+		      <div id="modalFrame"></div>
+		    </div>
+		    <div class="modal-footer">
+		      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Chiudi</a>
+		    </div>
+		  </div>
       </main>
       <footer class="page-footer style-footer white">
          <div style="background-color:#1565C0;height:1px"></div>

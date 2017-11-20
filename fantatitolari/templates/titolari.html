@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card-panel des">
+	<div class="row">
+		<div class="input-field col l12 m12 s12">
+			<div id="modteam">
+				<i class="material-icons prefix">beenhere</i>
+				<select id="teamName" name="teamName" onchange="getTitolari()">
+					<option value="">Seleziona Squadra</option>
+				{% for team in teams %}
+	    			<option value="{{ team }}">{{ team }}</option>
+				{% endfor %}
+			  </select>
+		  </div>
+		</div>
+	</div>
+</div>
+
+<div class="row"></div>
+<h2>Squadra</h2>
+<div class="card-panel des">
+<div id="players">
+</div>
+</div>
+  
+{% endblock %}
