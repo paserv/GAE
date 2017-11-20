@@ -51,18 +51,41 @@ function remove_player(player) {
 	$("[id='" + player['id'] + "']").remove();
 }
 
-function saveTeam() {
-	var result = {};
-	if ($("#modteam").css('display') == 'none') {
-		if ($("#teamName").val()) {
-			result['teamName'] = $("#teamName").val();
-		} else {
-			Materialize.toast("Inserisci il nome squadra", 3000);
-			return;
-		}
+function creaSquadra() {
+	teamName = $("#teamName").val();
+	var found = false;
+	if (teamName) {
+		$.get( "get_teams", function( teams ) {
+			var userTeams = teams['teams']; 
+			for (i = 0; i < userTeams.length; i++) { 
+			    currTeam = userTeams[i];
+			    if (currTeam == teamName) {
+					Materialize.toast("Nome squadra esistente", 3000);
+					found = true;
+				}
+			}
+			if (!found) {
+				saveTeam("cs");
+			}
+		});
 	} else {
-		result['teamName'] = $( "#teams" ).val();
+		Materialize.toast("Inserisci il nome squadra", 3000);
+	}	
+	
+}
+
+function modificaSquadra() {
+	teamName = $("#teamName").val();
+	if (teamName) {
+		saveTeam("ms");
+	} else {
+		Materialize.toast("Inserisci il nome squadra", 3000);
 	}
+}
+
+function saveTeam(redirect) {
+	var result = {};
+	result['teamName'] = $("#teamName").val();
 	var teamPlayers = [];
 	$( ".player" ).each(function( index ) {
 		teamPlayers.push($( this ).attr('id'));
@@ -81,8 +104,8 @@ function saveTeam() {
 
 function getTeamPlayers() {
 	$('#players').html("");
-	if($( "#teams" ).val() != "") {
-		var team = $( "#teams" ).val();
+	if($( "#teamName" ).val() != "") {
+		var team = $( "#teamName" ).val();
 		$.get( "get_team_players/" + team, function( data ) {
 			team_players = data['players'];
 			$.each(team_players, function( index, value ) {
@@ -109,36 +132,28 @@ function getTeamPlayers() {
 		});
 		$("#delete_btn").removeAttr("disabled");
 		$("#edit_btn").removeAttr("disabled");
+	} else {
+		$("#delete_btn").attr("disabled", true);;
+		$("#edit_btn").attr("disabled", true);;
 	}
 }
 
 function deleteTeam() {
-	var team = $( "#teams" ).val();
-	$.ajax({
-	    url: 'delete_team/' + team,
-	    type: 'DELETE',
-	    success: function(result) {
-	    	Materialize.toast(result, 3000);
-	    }
-	});
+	if ($("#teamName").val()) {
+		var team = $( "#teamName" ).val();
+		$.ajax({
+		    url: 'delete_team/' + team,
+		    type: 'DELETE',
+		    success: function(result) {
+		    	Materialize.toast(result, 3000);
+		    	window.location.href = "ms";
+		    }
+		});
+	} else {
+		Materialize.toast("Inserisci il nome squadra", 3000);
+	}	
 }
 
-function hidenew(){
-	$('#newteam').hide("fast");
-	$('#modteam').show("fast");
-	$('#save_btn').hide();
-	$('#edit_btn').show();
-	$('#delete_btn').show();
-	$('#players').html("");
-	getTeamPlayers();
+function clearInput() {
+	$("#search").val(""); 
 }
-
-function hidemod(){
-	$('#modteam').hide("fast");
-	$('#newteam').show("fast");
-	$('#edit_btn').hide();
-	$('#save_btn').show();
-	$('#delete_btn').hide();
-	$('#players').html("");
-}
-

@@ -16,9 +16,6 @@ def save_team(user, inputteam):
     delete_team(user, data['teamName'])
     userKey = ndb.Key('User', user.email())
     teamKey = ndb.Key('Team', data['teamName'], parent=userKey)
-    #team_players = model.TeamPlayer.query(ancestor=teamKey)
-    #for player in team_players:
-    #    player.key.delete()
     
     userEntity = model.User(key = userKey)
     userEntity.put()
@@ -31,12 +28,12 @@ def save_team(user, inputteam):
         teamplayer.put()
         
 def get_teams(user):
-    result = []
+    result = {}
+    result['teams'] = []
     teams = model.Team.query(ancestor=ndb.Key('User', user.email()))
     for team in teams:
-        result.append(team.key.string_id())
+        result['teams'].append(team.key.string_id())
     return result
-        
 
 def get_team_players(user, team):
     result = {}

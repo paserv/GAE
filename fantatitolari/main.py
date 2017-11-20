@@ -21,15 +21,25 @@ def home():
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
 
 @app.route('/cs')
-def gestisci_squadra():
+def crea_squadra():
     user = users.get_current_user()
     if user:
         teams = data.get_teams(user)
-        return render_template('gestisci_squadra.html', title="Crea/Modifica Squadra", icon = "home", teams=teams)
+        return render_template('crea_squadra.html', title="Crea Squadra", icon = "home", teams=teams)
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
     
+@app.route('/ms')
+def modifica_squadra():
+    user = users.get_current_user()
+    if user:
+        teams = data.get_teams(user)['teams']
+        return render_template('modifica_squadra.html', title="Modifica Squadra", icon = "home", teams=teams)
+    else:
+        login_url = users.create_login_url('/')
+        return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
+  
 @app.route('/get_players')
 def get_players():
     result = data.get_player_list()
@@ -42,7 +52,7 @@ def save_team():
 
 @app.route('/get_teams')
 def get_teams():
-    return str(data.get_teams(users.get_current_user()))
+    return jsonify(data.get_teams(users.get_current_user()))
 
 @app.route('/get_team_players/<team>')
 def get_team_players(team):
