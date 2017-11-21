@@ -118,8 +118,8 @@ function createSimpleChip(id, role, iconUrl, name, statsUrl, teamUrl) {
 	var player = {};
 	player['id'] = id;
 	var chip = 
-		"<div class='row' id='" + id +"'>" +
-			"<div class='col s1 " + role + "'>" +
+		"<div class='row player' id='" + id +"'>" +
+			"<div class='col s1 " + role + "' style='width:auto'>" +
 				"<div class='mt30'><strong>" + role + "</strong></div>" + 
 			"</div>" +
 			"<div class='col s10 indigo lighten-5'>" +
@@ -136,7 +136,7 @@ function createSimpleChip(id, role, iconUrl, name, statsUrl, teamUrl) {
 function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
 	var myId = name + "_" + team;
 	var chip = 
-		"<div class='row ' id='" + id +"'>" +
+		"<div class='row player ' id='" + id +"' name='" + name.toLowerCase() + "' team='" + team.toLowerCase() + "'>" +
 			"<div class='col l1 m1 s1 " + role + "'>" +
 				"<div class='mt30'><strong>" + role + "</strong></div>" + 
 			"</div>" +
@@ -147,8 +147,7 @@ function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
 			"<div class='col l4 m3 s12 center'>" +
 				getChip(myId, "Fg") + getChip(myId, "Gaz") + getChip(myId, "CdS") + getChip(myId, "Sky") +
 			"</div>" +
-			"<div class='col l2 m3 s12 center'>" +
-				"Atalanta - Juventus" + 
+			"<div id='" + name.toLowerCase() + "_match" + "' class='col l2 m3 s12 center'>" +
 			"</div>" +
 		"</div>";
 	return chip;
@@ -160,18 +159,20 @@ function getChip(id, redazione) {
 }
 
 function getTitolari() {
+	var giornata = $( "#giornata" ).val();
+	$.get( "gazzetta/matches/" + giornata, function( giornate ) {
+		$( ".player" ).each(function( index ) {
+			var team = $( this ).attr('team');
+			var name = $( this ).attr('name');
+			var match = giornate[team];
+			$("#" + name + "_match").html(match['home'] + " - " + match['away']);
+		});
+	});
+	
 	$.get( "gazzetta/" + giornata, function( data ) {
 		var titolari = data['titolari'];
 		$.each(titolari, function( index, value ) {
 			$("#" + value['name'] + "_" + value['team'] + "_gaz").addClass('green');
-		});
-		
-	});
-	
-	$.get( "fantagazzetta/" + giornata, function( data ) {
-		var titolari = data['titolari'];
-		$.each(titolari, function( index, value ) {
-			$("#" + value['name'] + "_" + value['team'] + "_fg").addClass('green');
 		});
 		
 	});

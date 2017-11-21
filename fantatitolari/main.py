@@ -80,6 +80,11 @@ def server_error(e):
     return "Error: " + str(e)
 
 ##### Data Scraper #####
+@app.route('/gazzetta/matches/<giornata>')
+def get_matches(giornata):
+    matches = scraper.matches(giornata)
+    return jsonify(matches);
+
 @app.route('/gazzetta/<giornata>')
 def get_titolari_gazzetta(giornata):
     result = scraper.gazzetta(giornata)
