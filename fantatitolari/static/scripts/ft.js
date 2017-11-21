@@ -169,10 +169,16 @@ function getTitolari() {
 		});
 	});
 	
-	$.get( "gazzetta/" + giornata, function( data ) {
-		var titolari = data['titolari'];
-		$.each(titolari, function( index, value ) {
-			$("#" + value['name'] + "_" + value['team'] + "_gaz").addClass('green');
+	$.get( "gazzetta/" + giornata, function( squadre ) {
+		$( ".player" ).each(function( index ) {
+			var team = $( this ).attr('team');
+			var name = $( this ).attr('name');
+			var titolari = squadre[team];
+			if ($.inArray(name, titolari) !== -1 ) {
+				$("#" + name + "_" + team + "_gaz").addClass('green');
+			} else {
+				$("#" + name + "_" + team + "_gaz").addClass('red');
+			}
 		});
 		
 	});

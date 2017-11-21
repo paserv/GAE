@@ -42,18 +42,18 @@ def gazzetta(giornata):
                 for match in matches:
                     home_team = match.find('div', attrs={'class': 'homeTeam'}).find('a').get_text(strip=True).strip().lower()
                     away_team = match.find('div', attrs={'class': 'awayTeam'}).find('a').get_text(strip=True).strip().lower()
-                    result[home_team] = []
-                    result[away_team] = []
+                    result[home_team.lower()] = []
+                    result[away_team.lower()] = []
     
                     titolari = match.find_all('ul', attrs={'class': 'team-players'})
     
                     titolari_home = titolari[0].find_all('span', attrs={'class': 'team-player'})
                     for titolare in titolari_home:
-                        result[home_team].append(titolare.text.lower())
+                        result[home_team.lower()].append(titolare.text.lower())
     
                     titolari_away = titolari[1].find_all('span', attrs={'class': 'team-player'})
                     for titolare in titolari_away:
-                        result[away_team].append(titolare.text.lower())
+                        result[away_team.lower()].append(titolare.text.lower())
     finally:
         return result   
     
