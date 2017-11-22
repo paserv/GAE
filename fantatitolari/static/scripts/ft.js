@@ -1,4 +1,7 @@
 var anagraficaGiocatori = {}
+var counter = 0;
+var redazioni = 2;
+
 function populate_players() {
 	$.get( "get_players", function( players ) {
 		$("#preloader").hide();
@@ -122,7 +125,7 @@ function createSimpleChip(id, role, iconUrl, name, statsUrl, teamUrl) {
 			"<div class='col s1 " + role + "' style='width:auto'>" +
 				"<div class='mt30'><strong>" + role + "</strong></div>" + 
 			"</div>" +
-			"<div class='col s10 indigo lighten-5'>" +
+			"<div class='col s10 indigo h80 lighten-5'>" +
 				"<img class='imgcard' src='" + iconUrl + "'>" +
 				"<img class='imgcard teamicon' src='" + teamUrl + "'><a class='waves-effect waves-light modal-trigger' onclick='openModal(\"" + name + "\",\"" + statsUrl + "\")'><strong>" + name + "</strong></a>" +
 			"</div>" +
@@ -134,20 +137,21 @@ function createSimpleChip(id, role, iconUrl, name, statsUrl, teamUrl) {
 }
 
 function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
-	var myId = name + "_" + team;
+	var newName = getName(name);
+	var myId = newName + "_" + team;
 	var chip = 
-		"<div class='row player ' id='" + id +"' name='" + name.toLowerCase() + "' team='" + team.toLowerCase() + "'>" +
+		"<div class='row player ' id='" + id +"' name='" + newName + "' team='" + team.toLowerCase() + "'>" +
 			"<div class='col l1 m1 s1 " + role + "'>" +
 				"<div class='mt30'><strong>" + role + "</strong></div>" + 
 			"</div>" +
-			"<div class='col l5 m5 s11 indigo lighten-5'>" +
+			"<div class='col l5 m5 s11 h80 indigo lighten-5'>" +
 				"<img class='imgcard' src='" + iconUrl + "'>" +
 				"<img class='imgcard teamicon' src='" + teamUrl + "'><a class='waves-effect waves-light modal-trigger' onclick='openModal(\"" + name + "\",\"" + statsUrl + "\")'><strong>" + name + "</strong></a>" +
 			"</div>" +
 			"<div class='col l4 m3 s12 center'>" +
 				getChip(myId, "Fg") + getChip(myId, "Gaz") + getChip(myId, "CdS") + getChip(myId, "Sky") +
 			"</div>" +
-			"<div id='" + name.toLowerCase() + "_match" + "' class='col l2 m3 s12 center'>" +
+			"<div id='" + newName + "_match" + "' class='col l2 m3 s12 center'>" +
 			"</div>" +
 		"</div>";
 	return chip;
@@ -159,28 +163,46 @@ function getChip(id, redazione) {
 }
 
 function getTitolari() {
+	counter = 0;
+	$( "#preloader" ).show();
 	var giornata = $( "#giornata" ).val();
-	$.get( "gazzetta/matches/" + giornata, function( giornate ) {
-		$( ".player" ).each(function( index ) {
-			var team = $( this ).attr('team');
-			var name = $( this ).attr('name');
-			var match = giornate[team];
-			$("#" + name + "_match").html(match['home'] + " - " + match['away']);
-		});
-	});
+	getMatches("gazzetta", giornata);
+	getTitolariRedazione("gazzetta", giornata, "gaz");
+	getTitolariRedazione("fantagazzetta", giornata, "fg");
 	
-	$.get( "gazzetta/" + giornata, function( squadre ) {
-		$( ".player" ).each(function( index ) {
-			var team = $( this ).attr('team');
-			var name = $( this ).attr('name');
-			var titolari = squadre[team];
-			if ($.inArray(name, titolari) !== -1 ) {
-				$("#" + name + "_" + team + "_gaz").addClass('green');
-			} else {
-				$("#" + name + "_" + team + "_gaz").addClass('red');
-			}
-		});
-		
+}
+
+function getMatches(redazione, giornata) {
+	$.get( redazione + "/matches/" + giornata, function( giornate ) {
+		if (!jQuery.isEmptyObject(giornate)) {
+			$( ".player" ).each(function( index ) {
+				var team = $( this ).attr('team');
+				var name = $( this ).attr('name');
+				var match = giornate[team];
+				$("#" + name + "_match").html(match['home'] + " - " + match['away']);
+			});
+		}
+	});
+}
+
+function getTitolariRedazione(redazione, giornata, shortName) {
+	$.get( redazione + "/" + giornata, function( squadre ) {
+		if (!jQuery.isEmptyObject(squadre)) {
+			$( ".player" ).each(function( index ) {
+				var team = $( this ).attr('team');
+				var name = $( this ).attr('name');
+				var titolari = squadre[team];
+				if (isTitolare(name, titolari)) {
+					$("#" + name + "_" + team + "_" + shortName).addClass('green');
+				} else {
+					$("#" + name + "_" + team + "_" + shortName).addClass('red');
+				}
+			});
+		}
+		counter = counter + 1;
+		if (counter == redazioni) {
+			$( "#preloader" ).hide();
+		}
 	});
 }
 
@@ -252,6 +274,43 @@ function orderPlayers(players) {
 	$.each(players, function( index, value ) {
 		if (value['role'] == 'A') {
 			result.push(value);
+		}
+	});
+	return result;
+}
+
+function clearTitolari() {
+	$( ".player" ).each(function( index ) {
+		var team = $( this ).attr('team');
+		var name = $( this ).attr('name');
+		$("[id^=" + name + "_" + team).removeClass('green');
+		$("[id^=" + name + "_" + team).removeClass('red');
+		$("[id^=" + name + "_match").html("");
+	});
+}
+
+function getName(name) {
+	var newName = name;
+	var splittedSpace = name.split(" ");
+	if (splittedSpace.length > 1) {
+		newName = splittedSpace.reduce(function (a, b) { return a.length > b.length ? a : b; });
+	}
+	var splittedDash = name.split("-");
+	if (splittedDash.length > 1) { 
+		newName = splittedDash.reduce(function (a, b) { return a.length > b.length ? a : b; });
+	}
+	var splittedApostr = name.split("'");
+	if (splittedApostr.length > 1) { 
+		newName = splittedApostr.reduce(function (a, b) { return a.length > b.length ? a : b; });
+	}
+	return newName.toLowerCase();
+}
+
+function isTitolare(name, titolari) {
+	var result = false;
+	$.each(titolari, function( index, value ) {
+		if (value.indexOf(name) >= 0) {
+			result = true;
 		}
 	});
 	return result;

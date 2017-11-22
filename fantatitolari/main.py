@@ -1,5 +1,5 @@
 from flask import Flask, render_template, send_from_directory, jsonify, request
-from google.appengine.api import users, taskqueue
+from google.appengine.api import users
 import os
 
 import data
@@ -94,15 +94,3 @@ def get_titolari_gazzetta(giornata):
 def get_titolari_fantagazzetta(giornata):
     result = scraper.fantagazzetta(giornata)
     return jsonify(result);
-
-
-##### ADMIN #####
-@app.route('/enqueue_load_players')
-def enqueue_load_players():
-    taskqueue.add(url='/load_players')
-    return '', 200
-
-@app.route('/load_players', methods=['POST'])
-def load_players():
-    data.load_players()
-    return '', 200

@@ -1,7 +1,7 @@
-import csv
 import json
 import model
 from google.appengine.ext import ndb
+from google.appengine.api import urlfetch
 
 def get_player_list():
     result = {}
@@ -57,20 +57,21 @@ def delete_team(user, team):
     
     
 ##### ADMIN #####
-def load_players():
-    with open('static/lista_giocatori.csv', 'rb') as players:
-        reader = csv.reader(players, delimiter=';')
-        for row in reader:
-            anagraficaEntity = model.Anagrafica(key = ndb.Key('Anagrafica', row[0]))
-            anagraficaEntity.ident = int(row[0])
-            anagraficaEntity.role = row[1]
-            anagraficaEntity.name = row[2]
-            anagraficaEntity.team = row[3]
-            anagraficaEntity.quot = row[4]
-            anagraficaEntity.iconUrl = 'https://content.fantagazzetta.com/web/campioncini/small/' + row[2].replace(' ', '-') + '.png'
-            anagraficaEntity.teamUrl = 'http://content.fantagazzetta.com/web/img/team/' + row[3].lower() + '.png'
-            anagraficaEntity.statsUrl = 'https://www.fantagazzetta.com/squadre/Milan/' + row[2].replace(' ', '-') + '/' + row[0]
-            anagraficaEntity.playerLabel = row[2] + ' (' + row[1] + ')'
-            anagraficaEntity.put()    
-    
-    
+def load_players(csv):
+    for line in csv.splitlines():
+        row = line.split(';')
+        anagraficaEntity = model.Anagrafica(key = ndb.Key('Anagrafica', row[0]))
+        anagraficaEntity.ident = int(row[0])
+        anagraficaEntity.role = row[1]
+        anagraficaEntity.name = row[2]
+        anagraficaEntity.team = row[3]
+        anagraficaEntity.quot = row[4]
+        candidateIconUrl = 'https://content.fantagazzetta.com/web/campioncini/small/' + row[2].replace(' ', '-') + '.png'
+        request = urlfetch.fetch(candidateIconUrl)
+        if request.status_code == 403:
+            candidateIconUrl = "https://content.fantagazzetta.com/web/campioncini/small/NO-CAMPIONCINO.png"
+        anagraficaEntity.iconUrl = candidateIconUrl
+        anagraficaEntity.teamUrl = 'http://content.fantagazzetta.com/web/img/team/' + row[3].lower() + '.png'
+        anagraficaEntity.statsUrl = 'https://www.fantagazzetta.com/squadre/Milan/' + row[2].replace(' ', '-') + '/' + row[0]
+        anagraficaEntity.playerLabel = row[2] + ' (' + row[1] + ')'
+        anagraficaEntity.put()
