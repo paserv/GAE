@@ -79,11 +79,11 @@ def fantagazzetta(giornata):
                         result[away_team] = []
     
                         titolari_home = match.select('div.pgroup.lf')
-                        for titolare in titolari_home:
+                        for titolare in titolari_home[0:11]:
                             result[home_team].append(titolare.find('a').text.lower())
     
                         titolari_away = match.select('div.pgroup.rt')
-                        for titolare in titolari_away:
+                        for titolare in titolari_away[0:11]:
                             result[away_team].append(titolare.find('a').text.lower())
     finally:
         return result
