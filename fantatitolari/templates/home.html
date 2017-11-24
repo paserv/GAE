@@ -1,4 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-<a href="{{ login_url }}"></a>
+
+	<div class="card-panel des">
+		<div class="row center">
+			<div class="input-field col s12">
+			{% if login_url %}
+				<a href="{{ login_url }}"><img class="responsive-img" src="/static/img/google.jpg" height="50" width="50"></img><br>Login</a>
+			{% endif %}
+			{% if logout_url %}
+				<a href="{{ logout_url }}"><img class="responsive-img" src="/static/img/google.jpg" height="50" width="50"></img><br>Logout</a>
+			{% endif %}
+			</div>
+		</div>
+	</div>	
 {% endblock %}

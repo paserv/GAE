@@ -18,8 +18,14 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="input-field col l12 m12 s12">
-			<a class="right waves-effect waves-light btn indigo" onclick="creaSquadra()"><i class="material-icons right">save</i>Salva</a>
+		<div class="input-field col l6 m6 s12 right">
+			<a id="save_btn" class="right waves-effect waves-light btn indigo modal-trigger" onclick="creaSquadra()"><i class="material-icons right">save</i>Salva</a>
+		</div>
+		<div id="preloader" class="input-field col l6 m6 s12" style="display:none">
+			Operazione in corso...
+			<div class="progress">
+				<div class="indeterminate"></div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -7,49 +7,59 @@ import scraper
 
 app = Flask(__name__)
 
+@app.after_request
+def add_header(r):
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/')
-def home():
+def render_page(template, title, icon):
     user = users.get_current_user()
     if user:
         logout_url = users.create_logout_url('/')
-        return render_template('home.html', logout_url = logout_url, title="Home Page", icon = "home")
+        return render_template(template, title = title, icon = icon, logout_url = logout_url, user=user)
     else:
         login_url = users.create_login_url('/')
-        return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
+        return render_template('home.html', title = 'Login', icon = 'home', login_url = login_url)
+
+##### VIEWS #####
+@app.route('/')
+def home():
+    return render_page('home.html', 'Home Page', 'home');
 
 @app.route('/cs')
 def crea_squadra():
-    user = users.get_current_user()
-    if user:
-        return render_template('crea_squadra.html', title="Crea Squadra", icon = "home")
-    else:
-        login_url = users.create_login_url('/')
-        return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
+    return render_page('crea_squadra.html', 'Crea Squadra', 'home');
     
 @app.route('/ms')
 def modifica_squadra():
     user = users.get_current_user()
     if user:
+        logout_url = users.create_logout_url('/')
         teams = data.get_teams(user)['teams']
-        return render_template('modifica_squadra.html', title="Modifica Squadra", icon = "home", teams=teams)
+        return render_template('modifica_squadra.html', title="Modifica Squadra", icon = "home", teams=teams, logout_url = logout_url, user=user)
     else:
-        login_url = users.create_login_url('/')
+        login_url = users.create_login_url('/ms')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
 
 @app.route('/tit')
 def titolari():
     user = users.get_current_user()
     if user:
+        logout_url = users.create_logout_url('/')
         teams = data.get_teams(user)['teams']
-        return render_template('titolari.html', title="Verifica Titolari", icon = "home", teams=teams)
+        return render_template('titolari.html', title="Verifica Titolari", icon = "home", teams=teams, logout_url = logout_url, user=user)
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
-    
+
+##### API ##### 
 @app.route('/get_players')
 def get_players():
     result = data.get_player_list()
