@@ -1,6 +1,6 @@
 var anagraficaGiocatori = {}
 var counter = 0;
-var redazioni = 2;
+var redazioni = 3;
 
 function populate_players() {
 	$.get( "get_players", function( players ) {
@@ -189,7 +189,7 @@ function getTitolari() {
 	getMatches("gazzetta", giornata);
 	getTitolariRedazione("gazzetta", giornata, "gaz");
 	getTitolariRedazione("fantagazzetta", giornata, "fg");
-	
+	getTitolariRedazione("sky", giornata, "sky");
 }
 
 function getMatches(redazione, giornata) {

@@ -104,3 +104,8 @@ def get_titolari_gazzetta(giornata):
 def get_titolari_fantagazzetta(giornata):
     result = scraper.fantagazzetta(giornata)
     return jsonify(result);
+
+@app.route('/sky/<giornata>')
+def get_titolari_sky(giornata):
+    result = scraper.sky(giornata)
+    return jsonify(result);

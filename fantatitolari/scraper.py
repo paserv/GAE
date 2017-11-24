@@ -1,5 +1,11 @@
 from google.appengine.api import urlfetch
 from bs4 import BeautifulSoup
+from itertools import izip
+from unidecode import unidecode
+
+def pairwise(iterable):
+    a = iter(iterable)
+    return izip(a, a)
 
 def matches(giornata):
     link = "http://www.gazzetta.it/Calcio/prob_form/"
@@ -85,5 +91,41 @@ def fantagazzetta(giornata):
                         titolari_away = match.select('div.pgroup.rt')
                         for titolare in titolari_away[0:11]:
                             result[away_team].append(titolare.find('a').text.lower())
+    finally:
+        return result
+    
+def sky(giornata):
+    link = "https://sport.sky.it/calcio/serie-a/probabili-formazioni/"
+    result = {}
+    try:
+        request = urlfetch.fetch(link)
+        if request.status_code == 200:
+            html_data = request.content
+            parsed_html = BeautifulSoup(html_data, "html.parser")
+    
+            parsed_gior = parsed_html.body.find('div', attrs={'class': 'subtitlesection'}).text
+            if giornata in parsed_gior:
+                matches = parsed_html.body.find_all('span', attrs={'class': 'team'})
+                home_formazione = parsed_html.select('div.team-1.left')
+                away_formazione = parsed_html.select('div.team-2.right')
+                home_teams = []
+                away_teams = []
+                for x, y in pairwise(matches):
+                    home_teams.append(x.findNext('span').text.lower())
+                    away_teams.append(y.findNext('span').text.lower())
+    
+                for index in range(0,10):
+                    curr_home_team = home_teams[index]
+                    result[curr_home_team] = []
+                    players = home_formazione[index].find_all('li', attrs={'class': 'player'})
+                    for player in players:
+                        result[curr_home_team].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
+    
+                for index in range(0,10):
+                    curr_away_team = away_teams[index]
+                    result[curr_away_team] = []
+                    players = away_formazione[index].find_all('li', attrs={'class': 'player'})
+                    for player in players:
+                        result[curr_away_team].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
     finally:
         return result
