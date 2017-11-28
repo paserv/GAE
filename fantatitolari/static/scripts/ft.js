@@ -1,6 +1,6 @@
 var anagraficaGiocatori = {}
 var counter = 0;
-var redazioni = 1;
+var redazioni = 4;
 
 function populate_players() {
 	$.get( "get_players", function( players ) {
