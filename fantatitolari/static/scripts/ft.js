@@ -1,6 +1,6 @@
 var anagraficaGiocatori = {}
 var counter = 0;
-var redazioni = 3;
+var redazioni = 1;
 
 function populate_players() {
 	$.get( "get_players", function( players ) {
@@ -168,7 +168,7 @@ function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
 				"<img class='imgcard teamicon' src='" + teamUrl + "'><a class='waves-effect waves-light modal-trigger' onclick='openModal(\"" + name + "\",\"" + statsUrl + "\")'><strong>" + name + "</strong></a>" +
 			"</div>" +
 			"<div class='col l4 m3 s12 center'>" +
-				getChip(myId, "Fg") + getChip(myId, "Gaz") + getChip(myId, "CdS") + getChip(myId, "Sky") +
+				getChip(myId, "Fg") + getChip(myId, "Gaz") + getChip(myId, "Med") + getChip(myId, "Sky") +
 			"</div>" +
 			"<div id='" + newName + "_match" + "' class='col l2 m3 s12 center'>" +
 			"</div>" +
@@ -186,14 +186,11 @@ function getTitolari() {
 	$( "#preloader" ).show();
 	$("#titolari_btn").attr("disabled", true);
 	var giornata = $( "#giornata" ).val();
-	getMatches("gazzetta", giornata);
-	getTitolariRedazione("gazzetta", giornata, "gaz");
-	getTitolariRedazione("fantagazzetta", giornata, "fg");
-	getTitolariRedazione("sky", giornata, "sky");
+	findTitolari(giornata);
 }
 
-function getMatches(redazione, giornata) {
-	$.get( redazione + "/matches/" + giornata, function( giornate ) {
+function findTitolari(giornata) {
+	$.get( "gazzetta/matches/" + giornata, function( giornate ) {
 		if (!jQuery.isEmptyObject(giornate)) {
 			$( ".player" ).each(function( index ) {
 				var team = $( this ).attr('team');
@@ -202,28 +199,39 @@ function getMatches(redazione, giornata) {
 				$("#" + name + "_match").html(match['home'] + " - " + match['away']);
 			});
 		}
+		getTitolariRedazione("gazzetta", giornate, "gaz");
+		getTitolariRedazione("fantagazzetta", giornate, "fg");
+		getTitolariRedazione("sky", giornate, "sky");
+		getTitolariRedazione("mediaset", giornate, "med");
 	});
 }
 
-function getTitolariRedazione(redazione, giornata, shortName) {
-	$.get( redazione + "/" + giornata, function( squadre ) {
-		if (!jQuery.isEmptyObject(squadre)) {
-			$( ".player" ).each(function( index ) {
-				var team = $( this ).attr('team');
-				var name = $( this ).attr('name');
-				var titolari = squadre[team];
-				if (isTitolare(name, titolari)) {
-					$("#" + name + "_" + team + "_" + shortName).addClass('green');
-				} else {
-					$("#" + name + "_" + team + "_" + shortName).addClass('red');
-				}
-			});
-		}
-		counter = counter + 1;
-		if (counter == redazioni) {
-			$( "#preloader" ).hide();
-		    $("#titolari_btn").removeAttr("disabled");
-		}
+function getTitolariRedazione(redazione, giornate, shortName) {
+	$.ajax({
+	    type: 'POST',
+	    url: redazione,
+	    data: JSON.stringify(giornate),
+	    success: function (squadre) { 
+	    	if (!jQuery.isEmptyObject(squadre)) {
+				$( ".player" ).each(function( index ) {
+					var team = $( this ).attr('team');
+					var name = $( this ).attr('name');
+					var titolari = squadre[team];
+					if (isTitolare(name, titolari)) {
+						$("#" + name + "_" + team + "_" + shortName).addClass('green');
+					} else {
+						$("#" + name + "_" + team + "_" + shortName).addClass('red');
+					}
+				});
+			}
+	    	counter = counter + 1;
+			if (counter == redazioni) {
+				$( "#preloader" ).hide();
+			    $("#titolari_btn").removeAttr("disabled");
+			}
+	    },
+	    contentType: "application/json",
+	    dataType: 'json'
 	});
 }
 
@@ -231,6 +239,7 @@ function loadTeam() {
 	$("#titolari_btn").attr("disabled", true);
 	$('#players').html("");
 	if($( "#teamName" ).val() != "" && $( "#giornata" ).val() != "") {
+		$("#preloader_players").show();
 		var team = $( "#teamName" ).val();
 		var giornata = $( "#giornata" ).val();
 		$.get( "get_team_players/" + team, function( data ) {
@@ -242,6 +251,7 @@ function loadTeam() {
 				var chip = createTitolariChip(ordered_players[i]['id'], ordered_players[i]['role'], ordered_players[i]['iconUrl'], ordered_players[i]['name'], ordered_players[i]['statsUrl'], ordered_players[i]['teamUrl'], ordered_players[i]['team']);
 		    	$("#players").append(chip);
 			}
+			$("#preloader_players").hide();
 			$("#titolari_btn").removeAttr("disabled");
 		});
 	} else {
@@ -315,8 +325,8 @@ function clearTitolari() {
 }
 
 function getName(name) {
-	var newName = name;
-	var splittedSpace = name.split(" ");
+	var newName = name.replace(" ", "_");
+	var splittedSpace = newName.split(" ");
 	if (splittedSpace.length > 1) {
 		newName = splittedSpace.reduce(function (a, b) { return a.length > b.length ? a : b; });
 	}
@@ -333,8 +343,13 @@ function getName(name) {
 
 function isTitolare(name, titolari) {
 	var result = false;
+	var newName = name;
+	var splittedUnderscore = newName.split("_");
+	if (splittedUnderscore.length > 1) {
+		newName = splittedUnderscore.reduce(function (a, b) { return a.length > b.length ? a : b; });
+	}
 	$.each(titolari, function( index, value ) {
-		if (value.indexOf(name) >= 0) {
+		if (value.indexOf(newName) >= 0) {
 			result = true;
 		}
 	});

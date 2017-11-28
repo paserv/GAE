@@ -2,6 +2,8 @@ from google.appengine.api import urlfetch
 from bs4 import BeautifulSoup
 from itertools import izip
 from unidecode import unidecode
+import json
+import sys, traceback
 
 def pairwise(iterable):
     a = iter(iterable)
@@ -27,23 +29,26 @@ def matches(giornata):
     
                     daily_matches[home_team.lower()] = {'home': home_team.lower(), 'away': away_team.lower()}
                     daily_matches[away_team.lower()] = {'home': home_team.lower(), 'away': away_team.lower()}
+    except:
+        traceback.print_exc(file=sys.stdout)
     finally:
-        return daily_matches   
+        return daily_matches
     
     
-def gazzetta(giornata):
+def gazzetta(partite_string):
     link = "http://www.gazzetta.it/Calcio/prob_form/"
     result = {}
+    partite = json.loads(partite_string)
     try:
         request = urlfetch.fetch(link)
         if request.status_code == 200:        
             html_data = request.content
             parsed_html = BeautifulSoup(html_data, "html.parser")
     
-            parsed_gior = parsed_html.body.find('div', attrs={'class': 'mainHeading'})
-            curr_giorn = parsed_gior.find('h3').get_text(strip=True).strip()
-    
-            if curr_giorn[:2] == giornata:
+            first_match = parsed_html.body.find('div', attrs={'class': 'matchFieldContainer'})
+            first_home_team = first_match.find('div', attrs={'class': 'homeTeam'}).find('a').get_text(strip=True).strip().lower()
+            first_away_team = first_match.find('div', attrs={'class': 'awayTeam'}).find('a').get_text(strip=True).strip().lower()
+            if (partite[first_home_team]['away'] == first_away_team):
                 matches = parsed_html.body.find_all('div', attrs={'class': 'matchFieldContainer'})
                 for match in matches:
                     home_team = match.find('div', attrs={'class': 'homeTeam'}).find('a').get_text(strip=True).strip().lower()
@@ -63,19 +68,22 @@ def gazzetta(giornata):
     finally:
         return result   
     
-def fantagazzetta(giornata):
+def fantagazzetta(partite_string):
     link = "https://www.fantagazzetta.com/probabili-formazioni-serie-a"
     result = {}
+    partite = json.loads(partite_string)
     try:
         request = urlfetch.fetch(link)
         if request.status_code == 200:
             html_data = request.content
             parsed_html = BeautifulSoup(html_data, "html.parser")
     
-            parsed_gior = parsed_html.body.find('p', attrs={'class': 'titalign'}).text
-    
-            if parsed_gior[10:12] == giornata:
-                matches = parsed_html.body.select('div.in.no-gutter')
+            matches = parsed_html.body.select('div.in.no-gutter')
+            first_teams = matches[0].find_all('h3', attrs={'class': 'team-name'})
+            first_home_team = first_teams[0].get_text(strip=True).strip().lower()
+            first_away_team = first_teams[1].get_text(strip=True).strip().lower()
+            
+            if (partite[first_home_team]['away'] == first_away_team):
                 for match in matches:
                     teams = match.find_all('h3', attrs={'class': 'team-name'})
                     if teams:
@@ -83,44 +91,46 @@ def fantagazzetta(giornata):
                         away_team = teams[1].get_text(strip=True).strip().lower()
                         result[home_team] = []
                         result[away_team] = []
-    
+       
                         titolari_home = match.select('div.pgroup.lf')
                         for titolare in titolari_home[0:11]:
                             result[home_team].append(titolare.find('a').text.lower())
-    
+      
                         titolari_away = match.select('div.pgroup.rt')
                         for titolare in titolari_away[0:11]:
                             result[away_team].append(titolare.find('a').text.lower())
     finally:
         return result
     
-def sky(giornata):
+def sky(partite_string):
     link = "https://sport.sky.it/calcio/serie-a/probabili-formazioni/"
     result = {}
+    partite = json.loads(partite_string)
     try:
         request = urlfetch.fetch(link)
         if request.status_code == 200:
             html_data = request.content
             parsed_html = BeautifulSoup(html_data, "html.parser")
     
-            parsed_gior = parsed_html.body.find('div', attrs={'class': 'subtitlesection'}).text
-            if giornata in parsed_gior:
-                matches = parsed_html.body.find_all('span', attrs={'class': 'team'})
-                home_formazione = parsed_html.select('div.team-1.left')
-                away_formazione = parsed_html.select('div.team-2.right')
-                home_teams = []
-                away_teams = []
-                for x, y in pairwise(matches):
-                    home_teams.append(x.findNext('span').text.lower())
-                    away_teams.append(y.findNext('span').text.lower())
+            matches = parsed_html.body.find_all('span', attrs={'class': 'team'})
+            home_formazione = parsed_html.select('div.team-1.left')
+            away_formazione = parsed_html.select('div.team-2.right')
+            home_teams = []
+            away_teams = []
+            for x, y in pairwise(matches):
+                home_teams.append(x.findNext('span').text.lower())
+                away_teams.append(y.findNext('span').text.lower())
     
+            first_home_team = home_teams[0]
+            first_away_team = away_teams[0]
+            if (partite[first_home_team]['away'] == first_away_team):
                 for index in range(0,10):
                     curr_home_team = home_teams[index]
                     result[curr_home_team] = []
                     players = home_formazione[index].find_all('li', attrs={'class': 'player'})
                     for player in players:
                         result[curr_home_team].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
-    
+       
                 for index in range(0,10):
                     curr_away_team = away_teams[index]
                     result[curr_away_team] = []
@@ -129,3 +139,10 @@ def sky(giornata):
                         result[curr_away_team].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
     finally:
         return result
+    
+def mediaset(partite_string):
+    link = "http://www.sportmediaset.mediaset.it/squadre/probabili_formazioni.shtml"
+    result = {}
+    partite = json.loads(partite_string)
+    return result
+    

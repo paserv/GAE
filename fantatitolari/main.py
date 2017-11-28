@@ -95,17 +95,22 @@ def get_matches(giornata):
     matches = scraper.matches(giornata)
     return jsonify(matches);
 
-@app.route('/gazzetta/<giornata>')
-def get_titolari_gazzetta(giornata):
-    result = scraper.gazzetta(giornata)
+@app.route('/gazzetta', methods=['POST'])
+def get_titolari_gazzetta():
+    result = scraper.gazzetta(request.data)
     return jsonify(result);
 
-@app.route('/fantagazzetta/<giornata>')
-def get_titolari_fantagazzetta(giornata):
-    result = scraper.fantagazzetta(giornata)
+@app.route('/fantagazzetta', methods=['POST'])
+def get_titolari_fantagazzetta():
+    result = scraper.fantagazzetta(request.data)
+    return jsonify(result);
+    
+@app.route('/sky', methods=['POST'])
+def get_titolari_sky():
+    result = scraper.sky(request.data)
     return jsonify(result);
 
-@app.route('/sky/<giornata>')
-def get_titolari_sky(giornata):
-    result = scraper.sky(giornata)
+@app.route('/mediaset', methods=['POST'])
+def get_titolari_mediaset():
+    result = scraper.mediaset(request.data)
     return jsonify(result);
