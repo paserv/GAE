@@ -13,7 +13,7 @@ function populate_players() {
 		});
 		$('input.autocomplete').autocomplete({
 		    data: autocompleteData,
-		    limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
+		    limit: 10, // The max amount of results that can be shown at once. Default: Infinity.
 		    onAutocomplete: function(val) {
 		    	var playerName = val.split('(')[0].trim();
 		    	var playerId = anagraficaGiocatori[playerName]['id'];

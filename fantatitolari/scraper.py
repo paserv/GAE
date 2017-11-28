@@ -144,5 +144,32 @@ def mediaset(partite_string):
     link = "http://www.sportmediaset.mediaset.it/squadre/probabili_formazioni.shtml"
     result = {}
     partite = json.loads(partite_string)
-    return result
+    try:
+        request = urlfetch.fetch(link)
+        if request.status_code == 200:
+            html_data = request.content
+            parsed_html = BeautifulSoup(html_data, "html.parser")
+            
+            matches = parsed_html.body.find_all('div', attrs={'class': 'boxFormazione'})
+            first_teams = matches[0].find_all('span', attrs={'class': 'teamName'})
+            first_home_team = first_teams[0].get_text(strip=True).strip().lower()
+            first_away_team = first_teams[1].get_text(strip=True).strip().lower()
+            
+            if (partite[first_home_team]['away'] == first_away_team):
+                for match in matches:
+                    curr_teams = match.find_all('span', attrs={'class': 'teamName'})
+                    home_team = curr_teams[0].get_text(strip=True).strip().lower()
+                    away_team = curr_teams[1].get_text(strip=True).strip().lower()
+                    result[home_team] = []
+                    result[away_team] = []
+                    
+                    home_players = match.find('li', attrs={'class': 'home'}).find_all('span', attrs={'class': 'nome'})
+                    for titolare in home_players:
+                        result[home_team].append(titolare.text.lower())
+                    
+                    away_players = match.find('li', attrs={'class': 'away'}).find_all('span', attrs={'class': 'nome'})
+                    for titolare in away_players:
+                        result[away_team].append(titolare.text.lower())
+    finally:
+        return result
     
