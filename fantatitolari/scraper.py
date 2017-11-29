@@ -53,18 +53,26 @@ def gazzetta(partite_string):
                 for match in matches:
                     home_team = match.find('div', attrs={'class': 'homeTeam'}).find('a').get_text(strip=True).strip().lower()
                     away_team = match.find('div', attrs={'class': 'awayTeam'}).find('a').get_text(strip=True).strip().lower()
-                    result[home_team.lower()] = []
-                    result[away_team.lower()] = []
+                    result[home_team] = {}
+                    result[home_team]['titolari'] = []
+                    result[away_team] = {}
+                    result[away_team]['titolari'] = []
     
+                    homeDetails = match.find('div', attrs={'class': 'homeDetails'})
+                    result[home_team]['details'] = str(homeDetails)
+                    
+                    awayDetails = match.find('div', attrs={'class': 'awayDetails'})
+                    result[away_team]['details'] = str(awayDetails)
+                    
                     titolari = match.find_all('ul', attrs={'class': 'team-players'})
     
                     titolari_home = titolari[0].find_all('span', attrs={'class': 'team-player'})
                     for titolare in titolari_home:
-                        result[home_team.lower()].append(titolare.text.lower())
+                        result[home_team]['titolari'].append(titolare.text.lower())
     
                     titolari_away = titolari[1].find_all('span', attrs={'class': 'team-player'})
                     for titolare in titolari_away:
-                        result[away_team.lower()].append(titolare.text.lower())
+                        result[away_team]['titolari'].append(titolare.text.lower())
     finally:
         return result   
     
@@ -89,16 +97,18 @@ def fantagazzetta(partite_string):
                     if teams:
                         home_team = teams[0].get_text(strip=True).strip().lower()
                         away_team = teams[1].get_text(strip=True).strip().lower()
-                        result[home_team] = []
-                        result[away_team] = []
+                        result[home_team] = {}
+                        result[home_team]['titolari'] = []
+                        result[away_team] = {}
+                        result[away_team]['titolari'] = []
        
                         titolari_home = match.select('div.pgroup.lf')
                         for titolare in titolari_home[0:11]:
-                            result[home_team].append(titolare.find('a').text.lower())
+                            result[home_team]['titolari'].append(titolare.find('a').text.lower())
       
                         titolari_away = match.select('div.pgroup.rt')
                         for titolare in titolari_away[0:11]:
-                            result[away_team].append(titolare.find('a').text.lower())
+                            result[away_team]['titolari'].append(titolare.find('a').text.lower())
     finally:
         return result
     
@@ -126,17 +136,19 @@ def sky(partite_string):
             if (partite[first_home_team]['away'] == first_away_team):
                 for index in range(0,10):
                     curr_home_team = home_teams[index]
-                    result[curr_home_team] = []
+                    result[curr_home_team] = {}
+                    result[curr_home_team]['titolari'] = []
                     players = home_formazione[index].find_all('li', attrs={'class': 'player'})
                     for player in players:
-                        result[curr_home_team].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
+                        result[curr_home_team]['titolari'].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
        
                 for index in range(0,10):
                     curr_away_team = away_teams[index]
-                    result[curr_away_team] = []
+                    result[curr_away_team] = {}
+                    result[curr_away_team]['titolari'] = []
                     players = away_formazione[index].find_all('li', attrs={'class': 'player'})
                     for player in players:
-                        result[curr_away_team].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
+                        result[curr_away_team]['titolari'].append(unidecode(player.find('span', attrs={'class': 'name'}).text.lower()))
     finally:
         return result
     
@@ -160,16 +172,18 @@ def mediaset(partite_string):
                     curr_teams = match.find_all('span', attrs={'class': 'teamName'})
                     home_team = curr_teams[0].get_text(strip=True).strip().lower()
                     away_team = curr_teams[1].get_text(strip=True).strip().lower()
-                    result[home_team] = []
-                    result[away_team] = []
+                    result[home_team] = {}
+                    result[home_team]['titolari'] = []
+                    result[away_team] = {}
+                    result[away_team]['titolari'] = []
                     
                     home_players = match.find('li', attrs={'class': 'home'}).find_all('span', attrs={'class': 'nome'})
                     for titolare in home_players:
-                        result[home_team].append(titolare.text.lower())
+                        result[home_team]['titolari'].append(titolare.text.lower())
                     
                     away_players = match.find('li', attrs={'class': 'away'}).find_all('span', attrs={'class': 'nome'})
                     for titolare in away_players:
-                        result[away_team].append(titolare.text.lower())
+                        result[away_team]['titolari'].append(titolare.text.lower())
     finally:
         return result
     

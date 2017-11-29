@@ -168,7 +168,7 @@ function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
 				"<img class='imgcard teamicon' src='" + teamUrl + "'><a class='waves-effect waves-light modal-trigger' onclick='openModal(\"" + name + "\",\"" + statsUrl + "\")'><strong>" + name + "</strong></a>" +
 			"</div>" +
 			"<div class='col l4 m3 s12 center'>" +
-				getChip(myId, "Fg") + getChip(myId, "Gaz") + getChip(myId, "Med") + getChip(myId, "Sky") +
+				getChip(myId, "Fan") + getChip(myId, "Gaz") + getChip(myId, "Med") + getChip(myId, "Sky") +
 			"</div>" +
 			"<div id='" + newName + "_match" + "' class='col l2 m3 s12 center'>" +
 			"</div>" +
@@ -178,7 +178,13 @@ function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
 
 function getChip(id, redazione) {
 	var chipId = (id + "_" + redazione).toLowerCase();
-	return "<div id='" + chipId + "' class='chip mt3 center'>" + redazione +"</div>";
+	var result = "";
+	if (redazione == "Gaz" || redazione == "Fan") {
+		result = "<div id='" + chipId + "' class='chip mt3 center'>" + redazione +" (i)</div>";
+	} else {
+		result = "<div id='" + chipId + "' class='chip mt3 center'>" + redazione +"</div>";
+	}
+	return result;
 }
 
 function getTitolari() {
@@ -200,7 +206,7 @@ function findTitolari(giornata) {
 			});
 		}
 		getTitolariRedazione("gazzetta", giornate, "gaz");
-		getTitolariRedazione("fantagazzetta", giornate, "fg");
+		getTitolariRedazione("fantagazzetta", giornate, "fan");
 		getTitolariRedazione("sky", giornate, "sky");
 		getTitolariRedazione("mediaset", giornate, "med");
 	});
@@ -216,11 +222,16 @@ function getTitolariRedazione(redazione, giornate, shortName) {
 				$( ".player" ).each(function( index ) {
 					var team = $( this ).attr('team');
 					var name = $( this ).attr('name');
-					var titolari = squadre[team];
+					var titolari = squadre[team]['titolari'];
+					var divId = "#" + name + "_" + team + "_" + shortName;
 					if (isTitolare(name, titolari)) {
-						$("#" + name + "_" + team + "_" + shortName).addClass('green');
+						$(divId).addClass('green');
 					} else {
-						$("#" + name + "_" + team + "_" + shortName).addClass('red');
+						$(divId).addClass('red');
+					}
+					if (shortName == 'gaz') {
+						$(divId).click(function(){ openModalDetails(squadre[team]['details']); });
+						$(divId).addClass('curpoint');
 					}
 				});
 			}
@@ -283,6 +294,11 @@ function openModal(name, statsUrl) {
 	$("#playerName").html("Statistiche " + name);
 	$("#modalFrame").html("<iframe src='" + statsUrl + "' class='modalStats'></iframe>");
 	$("#modalStats").modal('open');
+}
+
+function openModalDetails(content) {
+	$("#modalContent").html(content);
+	$("#modalDetails").modal('open');
 }
 
 function clearInput() {
