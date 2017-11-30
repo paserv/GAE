@@ -35,7 +35,7 @@ def home():
 
 @app.route('/cs')
 def crea_squadra():
-    return render_page('crea_squadra.html', 'Crea Squadra', 'home');
+    return render_page('crea_squadra.html', 'Crea Squadra', 'add_circle_outline');
     
 @app.route('/ms')
 def modifica_squadra():
@@ -43,7 +43,7 @@ def modifica_squadra():
     if user:
         logout_url = users.create_logout_url('/')
         teams = data.get_teams(user)['teams']
-        return render_template('modifica_squadra.html', title="Modifica Squadra", icon = "home", teams=teams, logout_url = logout_url, user=user)
+        return render_template('modifica_squadra.html', title="Modifica Squadra", icon = "mode_edit", teams=teams, logout_url = logout_url, user=user)
     else:
         login_url = users.create_login_url('/ms')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
@@ -54,7 +54,7 @@ def titolari():
     if user:
         logout_url = users.create_logout_url('/')
         teams = data.get_teams(user)['teams']
-        return render_template('titolari.html', title="Verifica Titolari", icon = "home", teams=teams, logout_url = logout_url, user=user)
+        return render_template('titolari.html', title="Verifica Titolari", icon = "directions_run", teams=teams, logout_url = logout_url, user=user)
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")

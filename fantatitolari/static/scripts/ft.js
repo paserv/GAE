@@ -168,7 +168,7 @@ function createTitolariChip(id, role, iconUrl, name, statsUrl, teamUrl, team) {
 				"<img class='imgcard teamicon' src='" + teamUrl + "'><a class='waves-effect waves-light modal-trigger' onclick='openModal(\"" + name + "\",\"" + statsUrl + "\")'><strong>" + name + "</strong></a>" +
 			"</div>" +
 			"<div class='col l4 m3 s12 center'>" +
-				getChip(myId, "Fan") + getChip(myId, "Gaz") + getChip(myId, "Med") + getChip(myId, "Sky") +
+				getChip(myId, "Gaz") + getChip(myId, "Fan") + getChip(myId, "Med") + getChip(myId, "Sky") +
 			"</div>" +
 			"<div id='" + newName + "_match" + "' class='col l2 m3 s12 center'>" +
 			"</div>" +
@@ -180,7 +180,7 @@ function getChip(id, redazione) {
 	var chipId = (id + "_" + redazione).toLowerCase();
 	var result = "";
 	if (redazione == "Gaz" || redazione == "Fan") {
-		result = "<div id='" + chipId + "' class='chip mt3 center'>" + redazione +" (i)</div>";
+		result = "<div id='" + chipId + "' class='chip mt3 center btn' style='text-transform:none'>" + redazione +" <i class='info-glipho material-icons'>info_outline</i></div>";
 	} else {
 		result = "<div id='" + chipId + "' class='chip mt3 center'>" + redazione +"</div>";
 	}
@@ -217,7 +217,8 @@ function getTitolariRedazione(redazione, giornate, shortName) {
 	    type: 'POST',
 	    url: redazione,
 	    data: JSON.stringify(giornate),
-	    success: function (squadre) { 
+	    success: function (data) {
+	    	var squadre = data;
 	    	if (!jQuery.isEmptyObject(squadre)) {
 				$( ".player" ).each(function( index ) {
 					var team = $( this ).attr('team');
@@ -230,6 +231,10 @@ function getTitolariRedazione(redazione, giornate, shortName) {
 						$(divId).addClass('red');
 					}
 					if (shortName == 'gaz') {
+						$(divId).click(function(){ openModalDetails(squadre[team]['details']); });
+						$(divId).addClass('curpoint');
+					}
+					if (shortName == 'fan') {
 						$(divId).click(function(){ openModalDetails(squadre[team]['details']); });
 						$(divId).addClass('curpoint');
 					}

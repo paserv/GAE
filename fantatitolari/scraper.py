@@ -101,11 +101,15 @@ def fantagazzetta(partite_string):
                         result[home_team]['titolari'] = []
                         result[away_team] = {}
                         result[away_team]['titolari'] = []
-       
+                        
+                        teamDetails = match.select('div.probbar.pad10')
+                        result[home_team]['details'] = str(teamDetails[0])
+                        result[away_team]['details'] = str(teamDetails[1])
+                        
                         titolari_home = match.select('div.pgroup.lf')
                         for titolare in titolari_home[0:11]:
                             result[home_team]['titolari'].append(titolare.find('a').text.lower())
-      
+                             
                         titolari_away = match.select('div.pgroup.rt')
                         for titolare in titolari_away[0:11]:
                             result[away_team]['titolari'].append(titolare.find('a').text.lower())
