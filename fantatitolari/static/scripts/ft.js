@@ -180,7 +180,7 @@ function getChip(id, redazione) {
 	var chipId = (id + "_" + redazione).toLowerCase();
 	var result = "";
 	if (redazione == "Gaz" || redazione == "Fan") {
-		result = "<div id='" + chipId + "' class='chip mt3 center btn' style='text-transform:none'>" + redazione +" <i class='info-glipho material-icons'>info_outline</i></div>";
+		result = "<div id='" + chipId + "' class='chip mt3 center' style='text-transform:none'>" + redazione +" <i class='info-glipho material-icons'>info_outline</i></div>";
 	} else {
 		result = "<div id='" + chipId + "' class='chip mt3 center'>" + redazione +"</div>";
 	}
@@ -189,26 +189,33 @@ function getChip(id, redazione) {
 
 function getTitolari() {
 	counter = 0;
+	$( ".chip" ).each(function( index ) {
+		$( this ).removeClass( "btn green red curpoint" );
+	});
 	$( "#preloader" ).show();
 	$("#titolari_btn").attr("disabled", true);
-	var giornata = $( "#giornata" ).val();
-	findTitolari(giornata);
+	findTitolari();
 }
 
-function findTitolari(giornata) {
-	$.get( "gazzetta/matches/" + giornata, function( giornate ) {
+function findTitolari() {
+	$.get( "gazzetta/matches", function( giornate ) {
 		if (!jQuery.isEmptyObject(giornate)) {
 			$( ".player" ).each(function( index ) {
 				var team = $( this ).attr('team');
 				var name = $( this ).attr('name');
 				var match = giornate[team];
-				$("#" + name + "_match").html(match['home'] + " - " + match['away']);
+				var homeTeam = match['home'].charAt(0).toUpperCase() + match['home'].slice(1);
+				var awayTeam = match['away'].charAt(0).toUpperCase() + match['away'].slice(1);
+				$("#" + name + "_match").html(homeTeam + " - " + awayTeam);
 			});
 		}
 		getTitolariRedazione("gazzetta", giornate, "gaz");
 		getTitolariRedazione("fantagazzetta", giornate, "fan");
 		getTitolariRedazione("sky", giornate, "sky");
 		getTitolariRedazione("mediaset", giornate, "med");
+	}).fail(function() {
+		Materialize.toast("Giornata non disponibile", 3000);
+		$( "#preloader" ).hide();
 	});
 }
 
@@ -223,20 +230,22 @@ function getTitolariRedazione(redazione, giornate, shortName) {
 				$( ".player" ).each(function( index ) {
 					var team = $( this ).attr('team');
 					var name = $( this ).attr('name');
-					var titolari = squadre[team]['titolari'];
-					var divId = "#" + name + "_" + team + "_" + shortName;
-					if (isTitolare(name, titolari)) {
-						$(divId).addClass('green');
-					} else {
-						$(divId).addClass('red');
-					}
-					if (shortName == 'gaz') {
-						$(divId).click(function(){ openModalDetails(squadre[team]['details']); });
-						$(divId).addClass('curpoint');
-					}
-					if (shortName == 'fan') {
-						$(divId).click(function(){ openModalDetails(squadre[team]['details']); });
-						$(divId).addClass('curpoint');
+					if (squadre[team]) {
+						var titolari = squadre[team]['titolari'];
+						var divId = "#" + name + "_" + team + "_" + shortName;
+						if (isTitolare(name, titolari)) {
+							$(divId).addClass('green');
+						} else {
+							$(divId).addClass('red');
+						}
+						if (shortName == 'gaz') {
+							$(divId).click(function(){ openModalDetails(squadre[team]['details']); });
+							$(divId).addClass('curpoint btn');
+						}
+						if (shortName == 'fan') {
+							$(divId).click(function(){ openModalDetails(squadre[team]['details']); });
+							$(divId).addClass('curpoint btn');
+						}
 					}
 				});
 			}
@@ -254,10 +263,9 @@ function getTitolariRedazione(redazione, giornate, shortName) {
 function loadTeam() {
 	$("#titolari_btn").attr("disabled", true);
 	$('#players').html("");
-	if($( "#teamName" ).val() != "" && $( "#giornata" ).val() != "") {
+	if($( "#teamName" ).val() != "") {
 		$("#preloader_players").show();
 		var team = $( "#teamName" ).val();
-		var giornata = $( "#giornata" ).val();
 		$.get( "get_team_players/" + team, function( data ) {
 			team_players = data['players'];
 			var ordered_players = orderPlayers(team_players);
@@ -271,7 +279,7 @@ function loadTeam() {
 			$("#titolari_btn").removeAttr("disabled");
 		});
 	} else {
-		Materialize.toast("Inserisci il nome squadra o la giornata", 3000);
+		Materialize.toast("Inserisci il nome squadra", 3000);
 	}
 }
 

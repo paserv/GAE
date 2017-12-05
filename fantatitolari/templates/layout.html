@@ -63,7 +63,7 @@
       		</li>
             <li class="no-padding blue lighten-5"><a class="collapsible-header" href="/tit"><img class="responsive-img" width="40px" style="vertical-align:middle" src="/static/img/titolari.png"> Titolari</a></li>
          	{% if logout_url %}
-         		<li class="no-padding blue lighten-5"><a class="collapsible-header" href="{{ logout_url }}"><img class="responsive-img" width="40px" style="vertical-align:middle" src="/static/img/logout.png"> Logout</a></li>
+         		<li class="no-padding blue lighten-5"><a class="collapsible-header" href="{{ logout_url }}"><img class="responsive-img" width="40px" style="vertical-align:middle" src="/static/img/logout.png"> Logout {{ user }}</a></li>
          	{% endif %}
          	{% if login_url %}
          		<li class="no-padding blue lighten-5"><a class="collapsible-header" href="{{ login_url }}"><img class="responsive-img" width="40px" style="vertical-align:middle" src="/static/img/login.png"> Login</a></li>

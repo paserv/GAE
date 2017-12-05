@@ -2,7 +2,7 @@
 {% block content %}
 <div class="card-panel des">
 	<div class="row">
-		<div class="input-field col l10 m10 s12">
+		<div class="input-field col l12 m12 s12">
 			<div id="modteam">
 				<i class="material-icons prefix">beenhere</i>
 				<select id="teamName" name="teamName" onchange="loadTeam()">
@@ -12,14 +12,6 @@
 				{% endfor %}
 			  </select>
 		  </div>
-		</div>
-		<div class="input-field col l2 m2 s12">
-				<i class="material-icons prefix">date_range</i>
-				<select id="giornata" name="giornata" onchange="clearTitolari()">
-					{% for index in range(1, 39): %}
-						<option value="{{ index }}">{{ index }}</option>
-					{% endfor %}
-			  </select>
 		</div>
 	</div>
 	<div class="row">

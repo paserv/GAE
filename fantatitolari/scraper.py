@@ -9,7 +9,7 @@ def pairwise(iterable):
     a = iter(iterable)
     return izip(a, a)
 
-def matches(giornata):
+def matches():
     link = "http://www.gazzetta.it/Calcio/prob_form/"
     daily_matches = {}
     try:
@@ -18,17 +18,16 @@ def matches(giornata):
             html_data = request.content
             parsed_html = BeautifulSoup(html_data, "html.parser")
     
-            parsed_gior = parsed_html.body.find('div', attrs={'class': 'mainHeading'})
-            curr_giorn = parsed_gior.find('h3').get_text(strip=True).strip()
+            #parsed_gior = parsed_html.body.find('div', attrs={'class': 'mainHeading'})
+            #curr_giorn = parsed_gior.find('h3').get_text(strip=True).strip()
     
-            if curr_giorn[:2] == giornata:
-                matches = parsed_html.body.find_all('div', attrs={'class': 'matchFieldContainer'})
-                for match in matches:
-                    home_team = match.find('div', attrs={'class': 'homeTeam'}).find('a').get_text(strip=True).strip().lower()
-                    away_team = match.find('div', attrs={'class': 'awayTeam'}).find('a').get_text(strip=True).strip().lower()
+            matches = parsed_html.body.find_all('div', attrs={'class': 'matchFieldContainer'})
+            for match in matches:
+                home_team = match.find('div', attrs={'class': 'homeTeam'}).find('a').get_text(strip=True).strip().lower()
+                away_team = match.find('div', attrs={'class': 'awayTeam'}).find('a').get_text(strip=True).strip().lower()
     
-                    daily_matches[home_team.lower()] = {'home': home_team.lower(), 'away': away_team.lower()}
-                    daily_matches[away_team.lower()] = {'home': home_team.lower(), 'away': away_team.lower()}
+                daily_matches[home_team.lower()] = {'home': home_team.lower(), 'away': away_team.lower()}
+                daily_matches[away_team.lower()] = {'home': home_team.lower(), 'away': away_team.lower()}
     except:
         traceback.print_exc(file=sys.stdout)
     finally:

@@ -21,9 +21,10 @@ def favicon():
 
 def render_page(template, title, icon):
     user = users.get_current_user()
+    username = str(user).split('@')[0]
     if user:
         logout_url = users.create_logout_url('/')
-        return render_template(template, title = title, icon = icon, logout_url = logout_url, user=user)
+        return render_template(template, title = title, icon = icon, logout_url = logout_url, user=username)
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', title = 'Login', icon = 'home', login_url = login_url)
@@ -40,10 +41,11 @@ def crea_squadra():
 @app.route('/ms')
 def modifica_squadra():
     user = users.get_current_user()
+    username = str(user).split('@')[0]
     if user:
         logout_url = users.create_logout_url('/')
         teams = data.get_teams(user)['teams']
-        return render_template('modifica_squadra.html', title="Modifica Squadra", icon = "mode_edit", teams=teams, logout_url = logout_url, user=user)
+        return render_template('modifica_squadra.html', title="Modifica Squadra", icon = "mode_edit", teams=teams, logout_url = logout_url, user=username)
     else:
         login_url = users.create_login_url('/ms')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
@@ -51,10 +53,11 @@ def modifica_squadra():
 @app.route('/tit')
 def titolari():
     user = users.get_current_user()
+    username = str(user).split('@')[0]
     if user:
         logout_url = users.create_logout_url('/')
         teams = data.get_teams(user)['teams']
-        return render_template('titolari.html', title="Verifica Titolari", icon = "directions_run", teams=teams, logout_url = logout_url, user=user)
+        return render_template('titolari.html', title="Verifica Titolari", icon = "directions_run", teams=teams, logout_url = logout_url, user=username)
     else:
         login_url = users.create_login_url('/')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
@@ -90,9 +93,9 @@ def server_error(e):
     return "Error: " + str(e)
 
 ##### Data Scraper #####
-@app.route('/gazzetta/matches/<giornata>')
-def get_matches(giornata):
-    matches = scraper.matches(giornata)
+@app.route('/gazzetta/matches')
+def get_matches():
+    matches = scraper.matches()
     return jsonify(matches);
 
 @app.route('/gazzetta', methods=['POST'])
