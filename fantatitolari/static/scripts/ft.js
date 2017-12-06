@@ -384,3 +384,19 @@ function isTitolare(name, titolari) {
 	});
 	return result;
 }
+
+function submitForm() {
+	var input = {};
+	if ($("#lega").val() && $("#squadra").val()) {
+		$("#preloader").show();
+		input['lega'] = $("#lega").val();
+		input['squadra'] = $("#squadra").val();
+		$.post("import", input, function(data) {
+	        Materialize.toast(data, 3000);
+	        $("#preloader").hide();
+	    });
+	} else {
+		Materialize.toast("Compila tutti i campi", 3000);
+	}
+
+}

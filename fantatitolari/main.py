@@ -50,6 +50,10 @@ def modifica_squadra():
         login_url = users.create_login_url('/ms')
         return render_template('home.html', login_url = login_url, title="Home Page", icon = "home")
 
+@app.route('/is')
+def importa_squadra():
+    return render_page('importa_squadra.html', 'Importa Squadra', 'import_export');
+
 @app.route('/tit')
 def titolari():
     user = users.get_current_user()
@@ -70,22 +74,38 @@ def get_players():
 
 @app.route('/save_team', methods=['POST'])
 def save_team():
-    data.save_team(users.get_current_user(), request.data)
-    return "Squadra Salvata con successo"
+    user = users.get_current_user()
+    if user:
+        data.save_team(user, request.data)
+        return "Squadra Salvata con successo"
+    else:
+        return "Login necessario"
 
 @app.route('/get_teams')
 def get_teams():
-    return jsonify(data.get_teams(users.get_current_user()))
+    user = users.get_current_user()
+    if user:
+        return jsonify(data.get_teams(user))
+    else:
+        return {}
 
 @app.route('/get_team_players/<team>')
 def get_team_players(team):
-    result = data.get_team_players(users.get_current_user(), team)
-    return jsonify(result)
+    user = users.get_current_user()
+    if user:
+        result = data.get_team_players(user, team)
+        return jsonify(result)
+    else:
+        return {}
 
 @app.route('/delete_team/<team>', methods=['DELETE'])
 def delete_team(team):
-    data.delete_team(users.get_current_user(), team)
-    return 'Eliminazione squadra riuscita con successo', 200
+    user = users.get_current_user()
+    if user:
+        data.delete_team(users.get_current_user(), team)
+        return 'Eliminazione squadra riuscita con successo', 200
+    else:
+        return "Login necessario"
 
 @app.errorhandler(400)
 @app.errorhandler(500)
@@ -96,24 +116,36 @@ def server_error(e):
 @app.route('/gazzetta/matches')
 def get_matches():
     matches = scraper.matches()
-    return jsonify(matches);
+    return jsonify(matches)
 
 @app.route('/gazzetta', methods=['POST'])
 def get_titolari_gazzetta():
     result = scraper.gazzetta(request.data)
-    return jsonify(result);
+    return jsonify(result)
 
 @app.route('/fantagazzetta', methods=['POST'])
 def get_titolari_fantagazzetta():
     result = scraper.fantagazzetta(request.data)
-    return jsonify(result);
+    return jsonify(result)
     
 @app.route('/sky', methods=['POST'])
 def get_titolari_sky():
     result = scraper.sky(request.data)
-    return jsonify(result);
+    return jsonify(result)
 
 @app.route('/mediaset', methods=['POST'])
 def get_titolari_mediaset():
     result = scraper.mediaset(request.data)
-    return jsonify(result);
+    return jsonify(result)
+
+@app.route('/import', methods=['POST'])
+def import_team():
+    lega = request.form['lega']
+    squadra = request.form['squadra']
+    user = users.get_current_user()
+    if user:
+        team = scraper.get_team(lega, squadra)
+        data.save_team(users.get_current_user(), team)
+        return "Squadra Salvata con successo"
+    else:
+        return "Login necessario"

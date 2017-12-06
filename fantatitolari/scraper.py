@@ -16,7 +16,7 @@ def matches():
         request = urlfetch.fetch(link)
         if request.status_code == 200:        
             html_data = request.content
-            parsed_html = BeautifulSoup(html_data, "html.parser")
+            parsed_html = BeautifulSoup(html_data, "lxml")
     
             #parsed_gior = parsed_html.body.find('div', attrs={'class': 'mainHeading'})
             #curr_giorn = parsed_gior.find('h3').get_text(strip=True).strip()
@@ -42,7 +42,7 @@ def gazzetta(partite_string):
         request = urlfetch.fetch(link)
         if request.status_code == 200:        
             html_data = request.content
-            parsed_html = BeautifulSoup(html_data, "html.parser")
+            parsed_html = BeautifulSoup(html_data, "lxml")
     
             first_match = parsed_html.body.find('div', attrs={'class': 'matchFieldContainer'})
             first_home_team = first_match.find('div', attrs={'class': 'homeTeam'}).find('a').get_text(strip=True).strip().lower()
@@ -83,7 +83,7 @@ def fantagazzetta(partite_string):
         request = urlfetch.fetch(link)
         if request.status_code == 200:
             html_data = request.content
-            parsed_html = BeautifulSoup(html_data, "html.parser")
+            parsed_html = BeautifulSoup(html_data, "lxml")
     
             matches = parsed_html.body.select('div.in.no-gutter')
             first_teams = matches[0].find_all('h3', attrs={'class': 'team-name'})
@@ -123,7 +123,7 @@ def sky(partite_string):
         request = urlfetch.fetch(link)
         if request.status_code == 200:
             html_data = request.content
-            parsed_html = BeautifulSoup(html_data, "html.parser")
+            parsed_html = BeautifulSoup(html_data, "lxml")
     
             matches = parsed_html.body.find_all('span', attrs={'class': 'team'})
             home_formazione = parsed_html.select('div.team-1.left')
@@ -163,7 +163,7 @@ def mediaset(partite_string):
         request = urlfetch.fetch(link)
         if request.status_code == 200:
             html_data = request.content
-            parsed_html = BeautifulSoup(html_data, "html.parser")
+            parsed_html = BeautifulSoup(html_data, "lxml")
             
             matches = parsed_html.body.find_all('div', attrs={'class': 'boxFormazione'})
             first_teams = matches[0].find_all('span', attrs={'class': 'teamName'})
@@ -187,6 +187,31 @@ def mediaset(partite_string):
                     away_players = match.find('li', attrs={'class': 'away'}).find_all('span', attrs={'class': 'nome'})
                     for titolare in away_players:
                         result[away_team]['titolari'].append(titolare.text.lower())
+    finally:
+        return result
+
+def get_team(lega, squadra):
+    link = "http://leghe.fantagazzetta.com/" + lega + "/tutte-le-rose"
+    lower_case_squadra = squadra.lower()
+    result = {}
+    try:
+        request = urlfetch.fetch(link)
+        if request.status_code == 200:
+            html_data = request.content
+            parsed_html = BeautifulSoup(html_data, "lxml")
+            
+            teams = parsed_html.select('div.greybox.item')
+            for team in teams:
+                team_name = team.find('th', attrs={'class': 'thtitle'}).get_text(strip=True)
+                if lower_case_squadra == team_name.lower():
+                    result["teamName"] = team_name
+                    result["teamPlayers"] = []
+                    playersLinks = team.find_all('a')
+                    for playerLink in playersLinks:
+                        idPlayer = playerLink['href'].split('/')[6]
+                        result["teamPlayers"].append(idPlayer)
+    except:
+        traceback.print_exc(file=sys.stdout)
     finally:
         return result
     

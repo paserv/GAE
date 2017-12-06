@@ -11,7 +11,10 @@ def get_player_list():
     return result
 
 def save_team(user, inputteam):
-    data = json.loads(inputteam)
+    if isinstance(inputteam, dict):
+        data = inputteam
+    else:
+        data = json.loads(inputteam)
     
     delete_team(user, data['teamName'])
     userKey = ndb.Key('User', user.email())

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="card-panel des">
+		<div class="row">
+			<div class="input-field col l12 m12 s12">
+				<div id="newteam">
+					<i class="material-icons prefix">blur_circular</i>
+					<input id="lega" name="lega" type="text" class="validate" placeholder="Lega Fantagazzetta">
+					<label for="lega">Nome Lega Fantagazzetta</label>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="input-field col l12 m12 s12">
+				<i class="material-icons prefix">beenhere</i>
+				<input id="squadra" name="squadra" type="text" class="validate" placeholder="Squadra Fantagazzetta">
+				<label for="squadra">Nome Squadra</label>
+			</div>
+		</div>
+		<div class="row">
+   			<button class="btn waves-effect waves-light right des indigo darken-4"  onClick="submitForm()">Importa Squadra
+   				<i class="material-icons right">sync</i>
+   			</button>
+   			<div id="preloader" class="input-field col l6 m6 s12" style="display:none">
+				Operazione in corso...
+				<div class="progress">
+					<div class="indeterminate"></div>
+				</div>
+		</div>
+		</div>
+</div>
+{% endblock %}
