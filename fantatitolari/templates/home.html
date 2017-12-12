@@ -8,7 +8,29 @@
 				<a href="{{ login_url }}"><img class="responsive-img" src="/static/img/google.jpg" height="50" width="50"></img><br>Login</a>
 			{% endif %}
 			{% if logout_url %}
-				<a href="{{ logout_url }}"><img class="responsive-img" src="/static/img/google.jpg" height="50" width="50"></img><br>Logout</a>
+				<div class="input-field col l3 m3 s6">
+					<a href="/cs"><i class="material-icons medium">add_circle_outline</i><br>Crea Squadra</a>
+				</div>
+				<div class="input-field col l3 m3 s6">
+					<a href="/ms"><i class="material-icons medium">edit</i><br>Modifica Squadra</a>
+				</div>
+				<div class="input-field col l3 m3 s6">
+					<a href="/is"><i class="material-icons medium">import_export</i><br>Importa Squadra</a>
+				</div>
+				<div class="input-field col l3 m3 s6">
+					<a href="/tit"><i class="material-icons medium">directions_run</i><br>Verifica Titolari</a>
+				</div>
+				<div class="row">
+				</div>
+				<div class="row">
+				</div>
+				<div class="row">
+				</div>
+				<div class="row right">
+					<div class="input-field col s12">
+						<a href="{{ logout_url }}"><img class="responsive-img" src="/static/img/logout_blue.png" height="50" width="50"></img><br>Logout {{ user }}</a>
+					</div>
+				</div>
 			{% endif %}
 			</div>
 		</div>
