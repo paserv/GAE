@@ -1,25 +1,23 @@
 from bs4 import BeautifulSoup
 from abstract_meteo import AbstractMeteo
-import data_controller as dc
-from meteoit_model import DayMeteo, WeekMeteo
+from trebmeteo_model import DayMeteo, WeekMeteo
 from google.appengine.api import urlfetch
 import datetime
 
-class ImplMeteoIt(AbstractMeteo):
-    base_url = 'http://www.meteo.it/meteo/'
-    name = 'meteoit'
+class ImplTreBMeteo(AbstractMeteo):
+    base_url = 'https://www.3bmeteo.com/meteo/'
+    name = '3bmeteo'
     
     def get_query_url(self, comune, day):
         nome_comune = comune.replace(' ', '-')
-        istat_code = dc.get_istat_code(comune)[-5:]
         return {
-            '0': self.base_url + nome_comune.lower() + '-' + istat_code,
-            '1': self.base_url + nome_comune.lower() + '-domani-' + istat_code,
-            '2': self.base_url + nome_comune.lower() + '-dopodomani-' + istat_code,
-            '3': self.base_url + nome_comune.lower() + '-3-giorni-' + istat_code,
-            '4': self.base_url + nome_comune.lower() + '-4-giorni-' + istat_code,
-            '5': self.base_url + nome_comune.lower() + '-5-giorni-' + istat_code,
-            '6': self.base_url + nome_comune.lower() + '-6-giorni-' + istat_code,
+            '0': self.base_url + nome_comune.lower(),
+            '1': self.base_url + nome_comune.lower() + '/1',
+            '2': self.base_url + nome_comune.lower() + '/2',
+            '3': self.base_url + nome_comune.lower() + '/3',
+            '4': self.base_url + nome_comune.lower() + '/4',
+            '5': self.base_url + nome_comune.lower() + '/5',
+            '6': self.base_url + nome_comune.lower() + '/6',
         }.get(day)
         
     def get_meteo_by_day(self, comune, day):
@@ -78,21 +76,5 @@ class ImplMeteoIt(AbstractMeteo):
     
     def get_meteo_week(self, parsed_html):
         result = []
-        myTime = datetime.datetime.now()
-        
-        weekDays = parsed_html.body.find_all('div', attrs={'class':'pk_item_menu'})
-        for day in weekDays:
-            weekMeteo = WeekMeteo()
-            label = myTime.strftime("%a %d %b")
-            myTime = myTime + datetime.timedelta(days=1)
-            minime = day.find('p', attrs={'class':'icon-max'})
-            massime = day.find('p', attrs={'class':'icon-min'})
-            svg = day.find('svg')
-            
-            weekMeteo.label_giorno = label
-            weekMeteo.minime = minime.get_text(strip=True).strip()
-            weekMeteo.massime = massime.get_text(strip=True).strip()
-            weekMeteo.svg = str(svg)
-            result.append(weekMeteo.__dict__)
         return result
     

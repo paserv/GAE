@@ -2,6 +2,7 @@ import os
 import json
 from flask import Flask, render_template, send_from_directory, request, jsonify
 from meteoit.meteoit_impl import ImplMeteoIt
+from trebmeteo.trebmeteo_impl import ImplTreBMeteo
 
 app = Flask(__name__)
 
@@ -18,10 +19,16 @@ def home():
 #    return dc.get_istat_code(comune)
 
 @app.route('/meteoit/<comune>/<giorno>', methods=['POST'])
-def prev_meteo(comune, giorno):
+def meteoit_prev(comune, giorno):
     meteo_it = ImplMeteoIt()
     meteoit_result = meteo_it.get_meteo_by_day(comune, giorno)
     return jsonify(meteoit_result)
+
+@app.route('/trebmeteo/<comune>/<giorno>', methods=['POST'])
+def treb_meteo_prev(comune, giorno):
+    treb_meteo = ImplTreBMeteo()
+    treb_meteo_result = treb_meteo.get_meteo_by_day(comune, giorno)
+    return jsonify(treb_meteo_result)
 
 @app.route('/test', methods=['GET'])
 def get_comuni():

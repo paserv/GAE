@@ -7,9 +7,7 @@ class DayMeteo():
     precipitazioni = None
     vento = None
     umidita = None
-    pressione = None
-    uv = None
-    svg = None
+    temp_percepita = None
 
         
 class WeekMeteo():
