@@ -32,8 +32,8 @@ class ImplMeteoIt(AbstractMeteo):
                 html_data = request.content
                 parsed_html = BeautifulSoup(html_data, "html.parser")
                 
-                svgdefinition = parsed_html.body.find('svg', attrs={'style':'position:absolute', "width" : "0"})
-                result['svgdefs'] = str(svgdefinition)
+                #svgdefinition = parsed_html.body.find('svg', attrs={'style':'position:absolute', "width" : "0"})
+                #result['svgdefs'] = str(svgdefinition)
                 
                 #result['week'] = self.get_meteo_week(parsed_html)
                 
@@ -56,22 +56,22 @@ class ImplMeteoIt(AbstractMeteo):
                 pressione_col = parsed_html.body.find('ul', attrs={'class':'pk_press'})
                 pressione = pressione_col.find_all('div', attrs={'class':'pk_bvalign'})
                 
-                #uv_col = parsed_html.body.find('ul', attrs={'class':'pk_uv'})
-                #uv = uv_col.find_all('div', attrs={'class':'pk_cuv'})
+                uv_col = parsed_html.body.find('ul', attrs={'class':'pk_uv'})
+                uv = uv_col.find_all('div', attrs={'class':'pk_cuv'})
                 
                 for i in range(0, 24):
                     currMeteo = DayMeteo()
                     #currMeteo.giorno = day
                     currMeteo.ora = ore[i].find('h4').get_text(strip=True).strip()
                     currMeteo.label = labels[i].find('span').get_text(strip=True).strip()
-                    currMeteo.svg = str(labels[i].find('svg'))
+                    #currMeteo.svg = str(labels[i].find('svg'))
                     
-                    currMeteo.temperatura = temperature[i + 1].get_text(strip=True).strip().encode('ascii','ignore')
+                    currMeteo.temperatura = temperature[i + 1].get_text(strip=True).strip().encode('ascii','ignore') + u'\N{DEGREE SIGN}'
                     currMeteo.precipitazioni = precipitazioni[i + 1].find('span').get_text(strip=True).strip()
-                    currMeteo.vento = vento[i + 1].find('span').get_text(strip=True).strip()
+                    currMeteo.vento = vento[i + 1].find('span').get_text(strip=True).strip() + ' Km/h'
                     currMeteo.umidita = umidita[i + 1].get_text(strip=True).strip()
-                    currMeteo.pressione = pressione[i + 1].get_text(strip=True).strip()
-                    #currMeteo.uv = uv[i + 1]['data-info']
+                    currMeteo.pressione = pressione[i + 1].get_text(strip=True).strip() + ' mbar'
+                    currMeteo.uv = uv[i + 1]['data-info']
                     result[self.name].append(currMeteo.__dict__)
         finally:             
             return result
