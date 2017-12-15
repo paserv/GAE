@@ -1,3 +1,5 @@
+var site_to_query = 2;
+
 function populate_list() {
 	$('input.autocomplete').autocomplete({
 		data: get_comuni(),
@@ -24,27 +26,44 @@ function find(){
 
 function findByComuneAndDay(comune, giorno) {
 	$("#preloader").show();
-	$("#meteoit").html("");
+	$("#result").html("");
+	$("#result").hide();
+	queried_sites = 0;
 	$.post( "meteoit/" + comune + "/" + giorno, function( data ) {
-		render_page(data);
-		$("#preloader").hide();
-		$("#meteoit").show();
+		queried_sites = queried_sites + 1;
+		if (site_to_query == queried_sites) {
+			render_page(data);
+		}
+	});
+	$.post( "trebmeteo/" + comune + "/" + giorno, function( data ) {
+		queried_sites = queried_sites + 1;
+		if (site_to_query == queried_sites) {
+			render_page(data);
+		}
 	});
 }
 
 function render_page(data) {
-	$("#meteoitdefs").html(data['svgdefs']);
-	var meteoitTable = createTable($("#meteoit"), data['meteoit']);
+	mergeData = {};
+	mergeData['meteoit'] = [];
+	
+	
+	var meteoitTable = createTable($("#result"), data['3bmeteo']);
+	$("#preloader").hide();
+	$("#result").show();
 }
 
-var header = [{"key": "ora", "label": "Ora"},
-	  {"key": "svg", "label": ""},
-	  {"key": "label", "label": "Previsione"},
-	  {"key": "temperatura", "label": "Temperatura"},
-	  {"key": "precipitazioni", "label": "Precipitazioni"},
-	  {"key": "vento", "label": "Vento"},
-	  {"key": "umidita", "label": "Umidita"},
-	  {"key": "pressione", "label": "Pressione"}
+var header = [{"key": "ora", "label": " "},
+	  {"key": "Meteo.it", "label": "meteoit"},
+	  {"key": "3BMeteo", "label": "3bmeteo"},
+//	  {"key": "label", "label": "Previsione"},
+//	  {"key": "temperatura", "label": "Temperatura"},
+//	  {"key": "precipitazioni", "label": "Precipitazioni"},
+//	  
+//	  {"key": "vento", "label": "Vento"},
+//	  {"key": "umidita", "label": "Umidita"},
+//	  {"key": "pressione", "label": "Pressione"},
+//	  {"key": "uv", "label": "UV"}
 	  ];
 
 function createTable(container, data) {
@@ -59,10 +78,6 @@ function createTable(container, data) {
 		var currentData = [];
 		$.each(header, function( headerValIndex, headerVal ) {
 			curr = dataVal[headerVal['key']];
-			//if (curr.indexOf('svg')) {
-			//	curr = curr.replace('/&lt;', '<');
-			//	curr = curr.replace('/&gt;', '>');
-			//}
 			currentData.push(curr);
 		});
 		orderedData.push(currentData);
@@ -83,11 +98,7 @@ function createTable(container, data) {
     $.each(orderedData, function(rowIndex, r) {
      	var row = $("<tr/>");
          $.each(r, function(colIndex, c) { 
-         	if (c.indexOf('svg') > 0) {
-         		row.append($("<td/>")).append(c);
-         	} else {
-         		row.append($("<td/>").text(c));
-         	}
+       		row.append($("<td/>").text(c));
          });
         body.append(row);
     });
