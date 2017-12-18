@@ -8050,7 +8050,16 @@ function getWeekDay(num) {
     return day;
 }
 
+function getHour(){
+	var now = new Date();
+	var hour = now.getHours();
+	return hour;
+}
+
 function dayclick(selection, o1, o2) {
+	$("#preloader").show();
+	$("#result").html("");
+	$("#result").hide();
 	$("#" + selection).addClass( "light-blue darken-4 white-text selected" );
 	$("#" + o1).removeClass( "light-blue darken-4 white-text selected" );
 	$("#" + o2).removeClass( "light-blue darken-4 white-text selected" );
@@ -8058,6 +8067,7 @@ function dayclick(selection, o1, o2) {
 }
 
 function populate_days() {
+
 	var today = new Date();
 	var todayDay = today.getDate();
 	var todayMonth = getMonth(today.getMonth());
@@ -8073,13 +8083,30 @@ function populate_days() {
 	var dayAfterTomorrowMonth = getMonth(dayAfterTomorrow.getMonth());
 	var dayOfWeek = getWeekDay(dayAfterTomorrow.getDay());
 	
-	$("#1").html("Oggi<br>" + todayDay + " " + todayMonth);
-	$("#2").html("Domani<br>" + tomorrowDay + " " + tomorrowMonth);
-	$("#3").html(dayOfWeek + "<br>" + dayAfterTomorrowDay + " " + dayAfterTomorrowMonth);
+	$("#0").html("Oggi<br>" + todayDay + " " + todayMonth);
+	$("#1").html("Domani<br>" + tomorrowDay + " " + tomorrowMonth);
+	$("#2").html(dayOfWeek + "<br>" + dayAfterTomorrowDay + " " + dayAfterTomorrowMonth);
 	
-	$("#1").addClass( "light-blue darken-4 white-text selected" );
+	$("#0").addClass( "light-blue darken-4 white-text selected" );
 	
-	$("#1").click(function(){ dayclick(1, 2, 3); });
-	$("#2").click(function(){ dayclick(2, 1, 3); });
-	$("#3").click(function(){ dayclick(3, 1, 2); });
+	$("#0").click(function(){ dayclick(0, 1, 2); });
+	$("#1").click(function(){ dayclick(1, 0, 2); });
+	$("#2").click(function(){ dayclick(2, 0, 1); });
 	}
+
+function firstCapital(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function format(json) {
+	var icon = "<img src='" + iconMap[json["label"].toLowerCase()] + "' alt='" + json["label"] + "' height='42' width='42'>";
+	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
+}
+
+var iconMap = {
+		"sereno": "static/img/sereno.png",
+		"sereno e gelido": "static/img/sereno_gelido.png",
+		"quasi sereno": "static/img/quasi_sereno.png",
+		"poche nubi": "static/img/poche_nubi.png",
+		"parz nuvoloso": "static/img/parzialmente_nuvoloso.png"
+}

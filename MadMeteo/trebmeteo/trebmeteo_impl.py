@@ -36,28 +36,32 @@ class ImplTreBMeteo(AbstractMeteo):
                     next(iterrows)
                 for row in iterrows:
                     currMeteo = DayMeteo()
-                    currMeteo.ora = row.find('div', attrs={'class':'col-xs-1-4'}).get_text(strip=True).strip()
-                    currMeteo.label = row.find('div', attrs={'class':'col-xs-2-4'}).get_text(strip=True).strip()
-                    temps = row.find_all('span', attrs={'class':'switchcelsius'})
-                    currMeteo.temperatura = temps[0].get_text(strip=True).strip()
-                    currMeteo.percepita = temps[1].get_text(strip=True).strip()
-                    if len(temps) == 3:
-                        currMeteo.temp_vento = temps[2].get_text(strip=True).strip()
-                    currMeteo.precipitazioni = row.find('div', attrs={'class':'altriDati-precipitazioni'}).get_text(strip=True).strip()
-                    currMeteo.vento = row.find('div', attrs={'class':'altriDati-venti'}).get_text().strip().split(' ')[0] + ' Km/h'
-                    currMeteo.umidita = row.find('div', attrs={'class':'altriDati-umidita'}).get_text(strip=True).strip()
-                    qn = row.find('div', attrs={'class':'altriDati-QN'})
-                    if qn:
-                        currMeteo.neve = qn.get_text(strip=True).strip()
-                    mare = row.find('div', attrs={'class':'altriDati-mare'})
-                    if mare:
-                        currMeteo.mare = mare.find('small').get_text(strip=True).strip()
-                    onda = row.find('div', attrs={'class':'altriDati-onda'})
-                    if onda:
-                        currMeteo.onda = onda.get_text().strip()
-                    currMeteo.pressione = row.find('div', attrs={'class':'altriDati-pressione'}).get_text(strip=True).strip() + ' mbar'
-                    currMeteo.uv = row.find('div', attrs={'class':'altriDati-raggiuv'}).get_text(strip=True).strip().split('(')[1][:-1]
-                    result[self.name].append(currMeteo.__dict__)
+                    ora = row.find('div', attrs={'class':'col-xs-1-4'}).get_text(strip=True).strip()
+                    if ora == "00:00":
+                        break
+                    else:
+                        currMeteo.ora = row.find('div', attrs={'class':'col-xs-1-4'}).get_text(strip=True).strip()
+                        currMeteo.label = row.find('div', attrs={'class':'col-xs-2-4'}).get_text(strip=True).strip()
+                        temps = row.find_all('span', attrs={'class':'switchcelsius'})
+                        currMeteo.temperatura = temps[0].get_text(strip=True).strip()
+                        currMeteo.percepita = temps[1].get_text(strip=True).strip()
+                        if len(temps) == 3:
+                            currMeteo.temp_vento = temps[2].get_text(strip=True).strip()
+                        currMeteo.precipitazioni = row.find('div', attrs={'class':'altriDati-precipitazioni'}).get_text(strip=True).strip()
+                        currMeteo.vento = row.find('div', attrs={'class':'altriDati-venti'}).get_text().strip().split(' ')[0] + ' Km/h'
+                        currMeteo.umidita = row.find('div', attrs={'class':'altriDati-umidita'}).get_text(strip=True).strip()
+                        qn = row.find('div', attrs={'class':'altriDati-QN'})
+                        if qn:
+                            currMeteo.neve = qn.get_text(strip=True).strip()
+                        mare = row.find('div', attrs={'class':'altriDati-mare'})
+                        if mare:
+                            currMeteo.mare = mare.find('small').get_text(strip=True).strip()
+                        onda = row.find('div', attrs={'class':'altriDati-onda'})
+                        if onda:
+                            currMeteo.onda = onda.get_text().strip()
+                        currMeteo.pressione = row.find('div', attrs={'class':'altriDati-pressione'}).get_text(strip=True).strip() + ' mbar'
+                        currMeteo.uv = row.find('div', attrs={'class':'altriDati-raggiuv'}).get_text(strip=True).strip().split('(')[1][:-1]
+                        result[self.name].append(currMeteo.__dict__)
         finally:             
             return result
     
