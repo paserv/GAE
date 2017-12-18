@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from abstract_meteo import AbstractMeteo
 from trebmeteo_model import DayMeteo
 from google.appengine.api import urlfetch
+import sys, traceback
 
 class ImplTreBMeteo(AbstractMeteo):
     base_url = 'https://www.3bmeteo.com/meteo/'
@@ -23,7 +24,22 @@ class ImplTreBMeteo(AbstractMeteo):
         result = {}
         result[self.name] = []
         try:
-            url = self.get_query_url(comune, day)
+            if day != '0':
+                previousDay = int(day) - 1
+                previousDayPrev = self.get_meteo_by_page(comune, previousDay)
+                for i in range(0, 5):
+                    result[self.name].append(previousDayPrev[i])
+            currentDayPrev = self.get_meteo_by_page(comune, day)
+            result[self.name].extend(currentDayPrev)
+        except:
+            traceback.print_exc(file=sys.stdout)
+        finally:             
+            return result
+    
+    def get_meteo_by_page(self, comune, page):
+        result = []
+        try:
+            url = self.get_query_url(comune, page)
             request = urlfetch.fetch(url)
             if request.status_code == 200:
                 html_data = request.content
@@ -32,7 +48,7 @@ class ImplTreBMeteo(AbstractMeteo):
                 rows = parsed_html.body.select('div.row-table.noPad')
                 iterrows = iter(rows)
                 next(iterrows)
-                if day == '0':
+                if page == '0':
                     next(iterrows)
                 for row in iterrows:
                     currMeteo = DayMeteo()
@@ -61,10 +77,12 @@ class ImplTreBMeteo(AbstractMeteo):
                             currMeteo.onda = onda.get_text().strip()
                         currMeteo.pressione = row.find('div', attrs={'class':'altriDati-pressione'}).get_text(strip=True).strip() + ' mbar'
                         currMeteo.uv = row.find('div', attrs={'class':'altriDati-raggiuv'}).get_text(strip=True).strip().split('(')[1][:-1]
-                        result[self.name].append(currMeteo.__dict__)
+                        result.append(currMeteo.__dict__)
+        except:
+            traceback.print_exc(file=sys.stdout)
         finally:             
             return result
-    
+        
     def get_meteo_week(self, parsed_html):
         result = []
         return result
