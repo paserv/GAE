@@ -25,7 +25,7 @@ function find(){
 
 function render_page(comune, giorno) {
 	$("#preloader").show();
-	$("#result").html("");
+	clearData();//$("#result").html("");
 	$("#result").hide();
 	
 	var numCols = 3;
@@ -33,16 +33,21 @@ function render_page(comune, giorno) {
 	if (giorno == "0") {
 		fromHour = getHour();
 	}
-	createTable($("#result"), fromHour, numCols);
+	
+	createTable($("#table_sintesi"), fromHour, numCols);
 	
 	$.post( "meteoit/" + comune + "/" + giorno, function( data ) {
 		updateTable(data, "meteoit");
+		$("#meteoit_head").html("Meteo.it");
+		$("#result").show();
+		$("#preloader").hide();
 	});
 	$.post( "trebmeteo/" + comune + "/" + giorno, function( data ) {
 		updateTable(data, "3bmeteo");
+		$("#3bmeteo_head").html("3BMeteo");
+		$("#result").show();
+		$("#preloader").hide();
 	});
-	$("#result").show();
-	$("#preloader").hide();
 }
 
 function updateTable(data, site) {
@@ -67,59 +72,7 @@ function groupData(data) {
 }
 
 
-var header = [{"key": "ora", "label": " "},
-	  {"key": "meteoit", "label": "meteoit"},
-	  {"key": "3bmeteo", "label": "3bmeteo"},
-//	  {"key": "label", "label": "Previsione"},
-//	  {"key": "temperatura", "label": "Temperatura"},
-//	  {"key": "precipitazioni", "label": "Precipitazioni"},
-//	  
-//	  {"key": "vento", "label": "Vento"},
-//	  {"key": "umidita", "label": "Umidita"},
-//	  {"key": "pressione", "label": "Pressione"},
-//	  {"key": "uv", "label": "UV"}
-	  ];
 
-
-function createTable(container, fromHour, numcols) {
-	var numRows = 24 - fromHour;
-	
-	var currHeader = [];
-	$.each(header, function( headerValIndex, headerVal ) {
-		currHeader.push(headerVal['label']);
-	});
-	
-    var table = $("<table/>").addClass('striped');
-    
-    var head = $("<thead/>");
-    var row = $("<tr/>");
-    $.each(currHeader, function(colIndex, c) { 
-    	row.append($("<th/>").text(c));
-    });
-    head.append(row);
-    table.append(head);
-    
-    var body = $("<tbody/>");
-    for (var i = fromHour; i <= 23; i++) {
-    	var index = i;
-    	if (i < 10) {
-    		index = "0" + i;
-		}
-    	var row = $("<tr/>");
-    	row.attr("id", "row_" + index);
-    	for (var j = 0; j < numcols; j++) {
-    		var col = $("<td/>");
-    		col.attr("id", header[j]["key"] + "_" + index);
-    		if (j == 0) {
-    			col.text(index + ":00");
-    		}
-    		row.append(col);
-    	}
-    	body.append(row);
-    }
-    table.append(body);
-    return container.append(table);
-}
 
 
 

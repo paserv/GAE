@@ -21,9 +21,20 @@
 	<div class="indeterminate"></div>
 </div>
 
-<div id="result" style="display:none">
-
-</div>
+<ul id="result" style="display:none" class="collapsible" data-collapsible="expandable">
+    <li>
+      <div class="collapsible-header active"><i class="material-icons">filter_drama</i>Sintesi</div>
+      <div id="table_sintesi" class="collapsible-body"></div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">place</i>Pressione</div>
+      <div id="table_pressione" class="collapsible-body"></div>
+    </li>
+    <li>
+      <div class="collapsible-header"><i class="material-icons">whatshot</i>Umidita</div>
+      <div id="table_uv" class="collapsible-body"></div>
+    </li>
+</ul>
 	
 </div>
 
@@ -33,6 +44,7 @@
 $(document).ready(function(){
 	populate_list();
 	populate_days();
+	$('.collapsible').collapsible();
 });
 </script>
 {% endblock %}

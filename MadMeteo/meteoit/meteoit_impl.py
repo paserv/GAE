@@ -71,7 +71,7 @@ class ImplMeteoIt(AbstractMeteo):
                     currMeteo.vento = vento[i + 1].find('span').get_text(strip=True).strip() + ' Km/h'
                     currMeteo.umidita = umidita[i + 1].get_text(strip=True).strip()
                     currMeteo.pressione = pressione[i + 1].get_text(strip=True).strip() + ' mbar'
-                    currMeteo.uv = uv[i + 1]['data-info']
+                    currMeteo.uv = uv[i]['data-info']
                     result[self.name].append(currMeteo.__dict__)
         finally:             
             return result

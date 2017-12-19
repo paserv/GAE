@@ -25,12 +25,11 @@ class ImplTreBMeteo(AbstractMeteo):
         result[self.name] = []
         try:
             if day != '0':
-                previousDay = int(day) - 1
+                previousDay = str(int(day) - 1)
                 previousDayPrev = self.get_meteo_by_page(comune, previousDay)
-                for i in range(0, 5):
-                    result[self.name].append(previousDayPrev[i])
+                result[self.name].extend(previousDayPrev[-6:])
             currentDayPrev = self.get_meteo_by_page(comune, day)
-            result[self.name].extend(currentDayPrev)
+            result[self.name].extend(currentDayPrev[:-6])
         except:
             traceback.print_exc(file=sys.stdout)
         finally:             
@@ -48,36 +47,32 @@ class ImplTreBMeteo(AbstractMeteo):
                 rows = parsed_html.body.select('div.row-table.noPad')
                 iterrows = iter(rows)
                 next(iterrows)
-                if page == '0':
-                    next(iterrows)
                 for row in iterrows:
                     currMeteo = DayMeteo()
-                    ora = row.find('div', attrs={'class':'col-xs-1-4'}).get_text(strip=True).strip()
-                    if ora == "00:00":
-                        break
-                    else:
-                        currMeteo.ora = row.find('div', attrs={'class':'col-xs-1-4'}).get_text(strip=True).strip()
+                    currMeteo.ora = row.find('div', attrs={'class':'col-xs-1-4'}).get_text(strip=True).strip()
+                    label = row.find('div', attrs={'class':'col-xs-2-4'})
+                    if label:
                         currMeteo.label = row.find('div', attrs={'class':'col-xs-2-4'}).get_text(strip=True).strip()
-                        temps = row.find_all('span', attrs={'class':'switchcelsius'})
-                        currMeteo.temperatura = temps[0].get_text(strip=True).strip()
-                        currMeteo.percepita = temps[1].get_text(strip=True).strip()
-                        if len(temps) == 3:
-                            currMeteo.temp_vento = temps[2].get_text(strip=True).strip()
-                        currMeteo.precipitazioni = row.find('div', attrs={'class':'altriDati-precipitazioni'}).get_text(strip=True).strip()
-                        currMeteo.vento = row.find('div', attrs={'class':'altriDati-venti'}).get_text().strip().split(' ')[0] + ' Km/h'
-                        currMeteo.umidita = row.find('div', attrs={'class':'altriDati-umidita'}).get_text(strip=True).strip()
-                        qn = row.find('div', attrs={'class':'altriDati-QN'})
-                        if qn:
-                            currMeteo.neve = qn.get_text(strip=True).strip()
-                        mare = row.find('div', attrs={'class':'altriDati-mare'})
-                        if mare:
-                            currMeteo.mare = mare.find('small').get_text(strip=True).strip()
-                        onda = row.find('div', attrs={'class':'altriDati-onda'})
-                        if onda:
-                            currMeteo.onda = onda.get_text().strip()
-                        currMeteo.pressione = row.find('div', attrs={'class':'altriDati-pressione'}).get_text(strip=True).strip() + ' mbar'
-                        currMeteo.uv = row.find('div', attrs={'class':'altriDati-raggiuv'}).get_text(strip=True).strip().split('(')[1][:-1]
-                        result.append(currMeteo.__dict__)
+                    temps = row.find_all('span', attrs={'class':'switchcelsius'})
+                    currMeteo.temperatura = temps[0].get_text(strip=True).strip()
+                    currMeteo.percepita = temps[1].get_text(strip=True).strip()
+                    if len(temps) == 3:
+                        currMeteo.temp_vento = temps[2].get_text(strip=True).strip()
+                    currMeteo.precipitazioni = row.find('div', attrs={'class':'altriDati-precipitazioni'}).get_text(strip=True).strip()
+                    currMeteo.vento = row.find('div', attrs={'class':'altriDati-venti'}).get_text().strip().split(' ')[0] + ' Km/h'
+                    currMeteo.umidita = row.find('div', attrs={'class':'altriDati-umidita'}).get_text(strip=True).strip()
+                    qn = row.find('div', attrs={'class':'altriDati-QN'})
+                    if qn:
+                        currMeteo.neve = qn.get_text(strip=True).strip()
+                    mare = row.find('div', attrs={'class':'altriDati-mare'})
+                    if mare:
+                        currMeteo.mare = mare.find('small').get_text(strip=True).strip()
+                    onda = row.find('div', attrs={'class':'altriDati-onda'})
+                    if onda:
+                        currMeteo.onda = onda.get_text().strip()
+                    currMeteo.pressione = row.find('div', attrs={'class':'altriDati-pressione'}).get_text(strip=True).strip() + ' mbar'
+                    currMeteo.uv = row.find('div', attrs={'class':'altriDati-raggiuv'}).get_text(strip=True).strip().split('(')[1][:-1]
+                    result.append(currMeteo.__dict__)
         except:
             traceback.print_exc(file=sys.stdout)
         finally:             

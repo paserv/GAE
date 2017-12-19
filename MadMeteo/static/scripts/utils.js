@@ -8056,9 +8056,15 @@ function getHour(){
 	return hour;
 }
 
+function clearData(){
+	$("#table_sintesi").html("");
+	$("#table_pressione").html("");
+	$("#table_uv").html("");
+}
+
 function dayclick(selection, o1, o2) {
 	$("#preloader").show();
-	$("#result").html("");
+	clearData();//$("#result").html("");
 	$("#result").hide();
 	$("#" + selection).addClass( "light-blue darken-4 white-text selected" );
 	$("#" + o1).removeClass( "light-blue darken-4 white-text selected" );
@@ -8099,8 +8105,90 @@ function firstCapital(string) {
 }
 
 function format(json) {
-	var icon = "<img src='" + iconMap[json["label"].toLowerCase()] + "' alt='" + json["label"] + "' height='42' width='42'>";
+	var iconUrl = iconMap[json["label"].toLowerCase()];
+	if (!iconUrl) {
+		iconUrl = "static/img/none.png";
+	}
+	var icon = "<img src='" + iconUrl + "' alt='" + json["label"] + "' height='42' width='42'>";
 	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
+}
+
+var header = [{"key": "ora", "label": " "},
+	  {"key": "meteoit", "label": "meteoit"},
+	  {"key": "3bmeteo", "label": "3bmeteo"},
+//	  {"key": "label", "label": "Previsione"},
+//	  {"key": "temperatura", "label": "Temperatura"},
+//	  {"key": "precipitazioni", "label": "Precipitazioni"},
+//	  
+//	  {"key": "vento", "label": "Vento"},
+//	  {"key": "umidita", "label": "Umidita"},
+//	  {"key": "pressione", "label": "Pressione"},
+//	  {"key": "uv", "label": "UV"}
+	  ];
+
+var preloader = '<div class="preloader-wrapper small active">' +
+					'<div class="spinner-layer spinner-green-only">' +
+						'<div class="circle-clipper left">' +
+							'<div class="circle"></div>' +
+						'</div>' +
+						'<div class="gap-patch">' +
+							'<div class="circle"></div>' +
+						'</div>' +
+						'<div class="circle-clipper right">' +
+							'<div class="circle"></div>' +
+						'</div>' +
+					'</div>' +
+				'</div>';
+
+
+function createTable(container, fromHour, numcols) {
+	var numRows = 24 - fromHour;
+	
+	var currHeader = [];
+	$.each(header, function( headerValIndex, headerVal ) {
+		currHeader.push(headerVal['label']);
+	});
+	
+  var table = $("<table/>").addClass('striped');
+  
+  var head = $("<thead/>");
+  var row = $("<tr/>");
+  $.each(currHeader, function(colIndex, c) {
+  	var th = $("<th/>");
+  	th.attr("id", c + "_head");
+  	th.attr("class", "center blue lighten-5");
+  	if (colIndex != 0) {
+  		row.append(th.html(preloader));
+  	} else {
+  		row.append(th.text(c));
+  	}
+  });
+  head.append(row);
+  table.append(head);
+  
+  var body = $("<tbody/>");
+  for (var i = fromHour; i <= 23; i++) {
+  	var index = i;
+  	if (i < 10) {
+  		index = "0" + i;
+		}
+  	var row = $("<tr/>");
+  	row.attr("id", "row_" + index);
+  	for (var j = 0; j < numcols; j++) {
+  		var col = $("<td/>");
+  		col.attr("id", header[j]["key"] + "_" + index);
+  		col.attr("class", "center");
+  		if (j == 0) {
+  			col.text(index + ":00");
+  		} else {
+  			col.text("-")
+  		}
+  		row.append(col);
+  	}
+  	body.append(row);
+  }
+  table.append(body);
+  return container.html(table);
 }
 
 var iconMap = {
