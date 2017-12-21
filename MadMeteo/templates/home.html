@@ -15,8 +15,6 @@
 		</div>
 	</div>
 
-<!-- <div id="meteoitdefs" style="display:none"></div>  -->
-
 <div id="preloader" class="progress" style="display:none">
 	<div class="indeterminate"></div>
 </div>
@@ -31,7 +29,7 @@
       <div id="table_precipitazioni" class="collapsible-body"></div>
     </li>
     <li>
-      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/sintesi.png" class="home-ico">Temperatura</div>
+      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/temperatura.png" class="home-ico">Temperatura</div>
       <div id="table_temperatura" class="collapsible-body"></div>
     </li>
     <li>
@@ -69,6 +67,7 @@ $(document).ready(function(){
 	populate_list();
 	populate_days();
 	$('.collapsible').collapsible();
+	$(".button-collapse").sideNav();
 });
 </script>
 {% endblock %}

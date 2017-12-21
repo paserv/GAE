@@ -33,8 +33,17 @@
          <nav class="top-nav blue lighten-5">
 	         <div class="nav-wrapper">
                   <a href="/" class="brand-logo right" style="margin-right: 10px"><i class="material-icons">wb_sunny</i></a>
+                  <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full show-on-large"><i class="material-icons" style="color:#3f51b5">menu</i></a>
              </div>
         </nav>
+        <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
+            <li>
+              <input type="checkbox" class="filled-in check" id="meteoit_check" checked="checked" />
+              <label for="meteoit_check">Meteo.it</label>
+            </li>
+            <li><div class="divider"></div></li>
+            <li>ASSA</li>
+        </ul>
       </header>
       <main>
          <h3>{{ title }}<i class="material-icons left">{{ icon }}</i></h3>

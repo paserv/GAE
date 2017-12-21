@@ -3,6 +3,7 @@ import json
 from flask import Flask, render_template, send_from_directory, request, jsonify
 from meteoit.meteoit_impl import ImplMeteoIt
 from trebmeteo.trebmeteo_impl import ImplTreBMeteo
+import logging
 
 app = Flask(__name__)
 
@@ -10,13 +11,17 @@ app = Flask(__name__)
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.after_request
+def add_header(r):
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
+
 @app.route('/')
 def home():
     return render_template('home.html', title="Home Page", icon = "home")
-
-#@app.route('/istat_code/<comune>', methods=['POST'])
-#def istat_code(comune):
-#    return dc.get_istat_code(comune)
 
 @app.route('/meteoit/<comune>/<giorno>', methods=['POST'])
 def meteoit_prev(comune, giorno):

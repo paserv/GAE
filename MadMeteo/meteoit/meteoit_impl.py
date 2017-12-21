@@ -4,6 +4,8 @@ import data_controller as dc
 from meteoit_model import DayMeteo, WeekMeteo
 from google.appengine.api import urlfetch
 import datetime
+import logging
+import sys, traceback
 
 class ImplMeteoIt(AbstractMeteo):
     base_url = 'http://www.meteo.it/meteo/'
@@ -23,6 +25,7 @@ class ImplMeteoIt(AbstractMeteo):
         }.get(day)
         
     def get_meteo_by_day(self, comune, day):
+        logging.debug('get_meteo_by_day: ' + comune + ' - ' + day)
         result = {}
         result[self.name] = []
         try:
@@ -73,6 +76,8 @@ class ImplMeteoIt(AbstractMeteo):
                     currMeteo.pressione = pressione[i + 1].get_text(strip=True).strip() + ' mbar'
                     currMeteo.uv = uv[i]['data-info']
                     result[self.name].append(currMeteo.__dict__)
+        except:
+            traceback.print_exc(file=sys.stdout)
         finally:             
             return result
     
