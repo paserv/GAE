@@ -8058,7 +8058,7 @@ function getHour(){
 
 function dayclick(selection, o1, o2) {
 	$("#preloader").show();
-	clearData();//$("#result").html("");
+	//clearData();//$("#result").html("");
 	$("#result").hide();
 	$("#" + selection).addClass( "light-blue darken-4 white-text selected" );
 	$("#" + o1).removeClass( "light-blue darken-4 white-text selected" );
@@ -8107,35 +8107,48 @@ function format(json) {
 	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
 }
 
-var header = [{"key": "ora", "label": "Ora"},
-	  {"key": "meteoit", "label": "Meteo.it"},
-	  {"key": "trebmeteo", "label": "3bmeteo"},
-//	  {"key": "label", "label": "Previsione"},
-//	  {"key": "temperatura", "label": "Temperatura"},
-//	  {"key": "precipitazioni", "label": "Precipitazioni"},
-//	  
-//	  {"key": "vento", "label": "Vento"},
-//	  {"key": "umidita", "label": "Umidita"},
-//	  {"key": "pressione", "label": "Pressione"},
-//	  {"key": "uv", "label": "UV"}
-	  ];
+//var header = [{"key": "ora", "label": "Ora"},
+//	  {"key": "meteoit", "label": "Meteo.it"},
+//	  {"key": "trebmeteo", "label": "3B Meteo"},
+//	  {"key": "meteoitalia", "label": "Meteo Italia"},
+//	  {"key": "ilmeteo", "label": "Il Meteo"},
+//	  ];
 
-var preloader = '<div class="preloader-wrapper small active">' +
-					'<div class="spinner-layer spinner-green-only">' +
-						'<div class="circle-clipper left">' +
-							'<div class="circle"></div>' +
-						'</div>' +
-						'<div class="gap-patch">' +
-							'<div class="circle"></div>' +
-						'</div>' +
-						'<div class="circle-clipper right">' +
-							'<div class="circle"></div>' +
-						'</div>' +
-					'</div>' +
-				'</div>';
+var sourceSiteMap = 
+	{"meteoit": "Meteo.it",
+	 "trebmeteo": "3B Meteo",
+	 "meteoitalia": "Meteo Italia",
+	 "ilmeteo": "Il Meteo"
+	};
 
 
-function createTable(name, fromHour, numcols) {
+function getPreloader (id) {
+	return '<div id="' + id + '" class="preloader-wrapper small active">' +
+				'<div class="spinner-layer spinner-green-only">' +
+				'<div class="circle-clipper left">' +
+					'<div class="circle"></div>' +
+				'</div>' +
+				'<div class="gap-patch">' +
+					'<div class="circle"></div>' +
+				'</div>' +
+				'<div class="circle-clipper right">' +
+					'<div class="circle"></div>' +
+				'</div>' +
+			'</div>' +
+			'</div>';
+}
+
+function getTablePrev (id) {
+	var label = firstCapital(id);
+return '<li>' +
+			'<div class="collapsible-header light-blue darken-4 white-text active"><img src="static/img/' + id + '.png" class="home-ico">' + label + '</div>' +
+			'<div id="table_' + id + '" class="collapsible-body home"></div>' +
+		'</li>';
+}
+
+function createTable(name, fromHour) {
+	
+	$("#result").append(getTablePrev(name));
 	
 	var container = $("#table_" + name);
 	container.html("");
@@ -8143,22 +8156,34 @@ function createTable(name, fromHour, numcols) {
 	var numRows = 24 - fromHour;
 	
 	var currHeader = [];
-	$.each(header, function( headerValIndex, headerVal ) {
-		currHeader.push(headerVal['label']);
+	var firstCol = {};
+	firstCol['key'] = "ora";
+	firstCol['label'] = "Ora";
+	currHeader.push(firstCol);
+	$("input:checkbox[name=source_site]:checked").each(function () {
+		var source_site = $(this).val();
+		var item = {};
+		item['key'] = source_site;
+		item['label'] = sourceSiteMap[source_site];
+		currHeader.push(item);
 	});
+	
 	
   var table = $("<table/>").addClass('striped');
   
   var head = $("<thead/>");
   var row = $("<tr/>");
   $.each(currHeader, function(colIndex, c) {
-  	var th = $("<th/>");
-  	th.attr("id", name + "_" + header[colIndex]["key"] + "_head");
+  	var keySource = name + "_" + c["key"];
+	var th = $("<th/>");
+  	th.attr("id", name + "_" + c["key"] + "_head");
   	th.attr("class", "center blue lighten-5");
   	if (colIndex != 0) {
-  		row.append(th.html(preloader));
+  		th.append(getPreloader(keySource + "_preloader"));
+  		th.append("<span id='" + keySource + "_span' style='display:none'>" + c["label"] + "</span>");
+  		row.append(th);
   	} else {
-  		row.append(th.text(c));
+  		row.append(th.text("Ora"));
   	}
   });
   head.append(row);
@@ -8172,9 +8197,9 @@ function createTable(name, fromHour, numcols) {
 		}
   	var row = $("<tr/>");
   	row.attr("id", "row_" + index);
-  	for (var j = 0; j < numcols; j++) {
+  	for (var j = 0; j < currHeader.length; j++) {
   		var col = $("<td/>");
-  		col.attr("id", name + "_" + header[j]["key"] + "_" + index);
+  		col.attr("id", name + "_" + currHeader[j]["key"] + "_" + index);
   		col.attr("class", "center");
   		if (j == 0) {
   			col.text(index + ":00");

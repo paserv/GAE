@@ -35,6 +35,18 @@ def treb_meteo_prev(comune, giorno):
     treb_meteo_result = treb_meteo.get_meteo_by_day(comune, giorno)
     return jsonify(treb_meteo_result)
 
+@app.route('/ilmeteo/<comune>/<giorno>', methods=['POST'])
+def il_meteo_prev(comune, giorno):
+    result = {}
+    result['ilmeteo'] = []
+    return jsonify(result)
+
+@app.route('/meteoitalia/<comune>/<giorno>', methods=['POST'])
+def meteoitalia_prev(comune, giorno):
+    result = {}
+    result['meteoitalia'] = []
+    return jsonify(result)
+
 @app.route('/test', methods=['GET'])
 def get_comuni():
     comune = request.args['comune']
