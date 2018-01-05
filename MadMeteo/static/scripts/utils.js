@@ -8019,8 +8019,8 @@ function getMonth(num) {
 	    	break;
 	    case 11:
 	    	month = "Dic";
-    return month;
 	}
+	return month;
 }
 
 function getWeekDay(num) {
@@ -8054,12 +8054,6 @@ function getHour(){
 	var now = new Date();
 	var hour = now.getHours();
 	return hour;
-}
-
-function clearData(){
-	$("#table_sintesi").html("");
-	$("#table_pressione").html("");
-	$("#table_uv").html("");
 }
 
 function dayclick(selection, o1, o2) {
@@ -8113,9 +8107,9 @@ function format(json) {
 	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
 }
 
-var header = [{"key": "ora", "label": " "},
-	  {"key": "meteoit", "label": "meteoit"},
-	  {"key": "3bmeteo", "label": "3bmeteo"},
+var header = [{"key": "ora", "label": "Ora"},
+	  {"key": "meteoit", "label": "Meteo.it"},
+	  {"key": "trebmeteo", "label": "3bmeteo"},
 //	  {"key": "label", "label": "Previsione"},
 //	  {"key": "temperatura", "label": "Temperatura"},
 //	  {"key": "precipitazioni", "label": "Precipitazioni"},
@@ -8141,7 +8135,11 @@ var preloader = '<div class="preloader-wrapper small active">' +
 				'</div>';
 
 
-function createTable(container, fromHour, numcols) {
+function createTable(name, fromHour, numcols) {
+	
+	var container = $("#table_" + name);
+	container.html("");
+	
 	var numRows = 24 - fromHour;
 	
 	var currHeader = [];
@@ -8155,7 +8153,7 @@ function createTable(container, fromHour, numcols) {
   var row = $("<tr/>");
   $.each(currHeader, function(colIndex, c) {
   	var th = $("<th/>");
-  	th.attr("id", c + "_head");
+  	th.attr("id", name + "_" + header[colIndex]["key"] + "_head");
   	th.attr("class", "center blue lighten-5");
   	if (colIndex != 0) {
   		row.append(th.html(preloader));
@@ -8176,7 +8174,7 @@ function createTable(container, fromHour, numcols) {
   	row.attr("id", "row_" + index);
   	for (var j = 0; j < numcols; j++) {
   		var col = $("<td/>");
-  		col.attr("id", header[j]["key"] + "_" + index);
+  		col.attr("id", name + "_" + header[j]["key"] + "_" + index);
   		col.attr("class", "center");
   		if (j == 0) {
   			col.text(index + ":00");
@@ -8196,5 +8194,6 @@ var iconMap = {
 		"sereno e gelido": "static/img/sereno_gelido.png",
 		"quasi sereno": "static/img/quasi_sereno.png",
 		"poche nubi": "static/img/poche_nubi.png",
-		"parz nuvoloso": "static/img/parzialmente_nuvoloso.png"
+		"parz nuvoloso": "static/img/parzialmente_nuvoloso.png",
+		"nuvoloso": "static/img/nuvoloso.png"
 }

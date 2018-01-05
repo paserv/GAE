@@ -6,7 +6,7 @@ import sys, traceback
 
 class ImplTreBMeteo(AbstractMeteo):
     base_url = 'https://www.3bmeteo.com/meteo/'
-    name = '3bmeteo'
+    name = 'trebmeteo'
     
     def get_query_url(self, comune, day):
         nome_comune = comune.replace(' ', '+')
