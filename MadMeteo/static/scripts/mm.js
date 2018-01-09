@@ -20,25 +20,23 @@ function find(){
 		Materialize.toast("Scegli il Comune", 3000);
 		$("#preloader").hide();
 	}
-	
 }
 
 function render_page(comune, giorno) {
-	$("#preloader").show();
-	$("#result").html("");
-	
+	setCookies();
+	hideResult();
 	
 	var fromHour = 0;
 	if (giorno == "0") {
 		fromHour = getHour();
 	}
 	
-	createTable("sintesi", fromHour);
+	//createTable("sintesi", fromHour);
 	$("input:checkbox[name=prev_type]:checked").each(function () {
 		createTable($(this).val(), fromHour);
 	});
 	
-	$("#result").hide();
+	
 	
 	$("input:checkbox[name=source_site]:checked").each(function () {
         var source_site = $(this).val();
@@ -58,6 +56,14 @@ function render_page(comune, giorno) {
 function showResult() {
 	$("#result").show();
 	$("#preloader").hide();
+}
+
+function hideResult() {
+	$("#preloader").show();
+	$("#result").hide();
+	$("li[id$=li]").each(function () {
+		$(this).hide();
+	});	
 }
 
 function updateTables(data, site) {

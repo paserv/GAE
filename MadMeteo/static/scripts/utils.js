@@ -8138,19 +8138,11 @@ function getPreloader (id) {
 			'</div>';
 }
 
-function getTablePrev (id) {
-	var label = firstCapital(id);
-return '<li>' +
-			'<div class="collapsible-header light-blue darken-4 white-text active"><img src="static/img/' + id + '.png" class="home-ico">' + label + '</div>' +
-			'<div id="table_' + id + '" class="collapsible-body home"></div>' +
-		'</li>';
-}
 
 function createTable(name, fromHour) {
 	
-	$("#result").append(getTablePrev(name));
-	
 	var container = $("#table_" + name);
+	$("#table_" + name + "_li").show();
 	container.html("");
 	
 	var numRows = 24 - fromHour;
@@ -8221,4 +8213,43 @@ var iconMap = {
 		"poche nubi": "static/img/poche_nubi.png",
 		"parz nuvoloso": "static/img/parzialmente_nuvoloso.png",
 		"nuvoloso": "static/img/nuvoloso.png"
+}
+
+function setCookies() {
+	$("input[id$=_check]").each(function () {
+		createCookie($(this).attr("id"), "checked", 15);
+	});	
+}
+
+function initConfigs() {
+	//LEGGI I COOKIES e configura le impostazioni
+}
+
+function createCookie(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
+function readCookies() {
+	//TODO
+}
+
+function eraseCookie(name) {
+	createCookie(name,"",-1);
 }
