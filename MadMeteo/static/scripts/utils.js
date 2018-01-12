@@ -8216,13 +8216,21 @@ var iconMap = {
 }
 
 function setCookies() {
-	$("input[id$=_check]").each(function () {
+	$("input:checkbox[name=prev_type]:checked").each(function () {
 		createCookie($(this).attr("id"), "checked", 15);
-	});	
+	});
+	$("input:checkbox:not(:checked)").each(function () {
+		createCookie($(this).attr("id"), "notchecked", 15);
+	});
 }
 
 function initConfigs() {
-	//LEGGI I COOKIES e configura le impostazioni
+	var cookies = readCookies();
+	$.each( cookies, function( key, value ) {
+		if (value == 'notchecked') {
+			$('#' + key).attr('checked', false);
+		}
+	});
 }
 
 function createCookie(name,value,days) {
@@ -8247,7 +8255,15 @@ function readCookie(name) {
 }
 
 function readCookies() {
-	//TODO
+	var result = {};
+	var ca = document.cookie.split(';');
+	for(var i=0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		var kv = c.split('=');
+		result[kv[0]] = kv[1];
+	}
+	return result;
 }
 
 function eraseCookie(name) {

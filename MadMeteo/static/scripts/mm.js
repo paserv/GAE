@@ -30,7 +30,7 @@ function render_page(comune, giorno) {
 	if (giorno == "0") {
 		fromHour = getHour();
 	}
-	
+		
 	//createTable("sintesi", fromHour);
 	$("input:checkbox[name=prev_type]:checked").each(function () {
 		createTable($(this).val(), fromHour);
