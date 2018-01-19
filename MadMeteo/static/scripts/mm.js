@@ -36,9 +36,6 @@ function render_page(comune, giorno) {
 		createTable($(this).val(), fromHour);
 	});
 	
-	var firstCheck = $("input:checkbox[name=prev_type]:checked:first").val();
-	var liIndex = $("#table_" + firstCheck + "_li").index();
-	$('.collapsible').collapsible('open', liIndex);
 	
 	$("input:checkbox[name=source_site]:checked").each(function () {
         var source_site = $(this).val();
@@ -53,6 +50,10 @@ function render_page(comune, giorno) {
 	       	showResult();
     	});
     });
+	
+	var firstCheck = $("input:checkbox[name=prev_type]:checked:first").val();
+	var liIndex = $("#table_" + firstCheck + "_li").index();
+	$('.collapsible').collapsible('open', liIndex);
 }
 
 function showResult() {
