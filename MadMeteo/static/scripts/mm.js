@@ -36,7 +36,9 @@ function render_page(comune, giorno) {
 		createTable($(this).val(), fromHour);
 	});
 	
-	
+	var firstCheck = $("input:checkbox[name=prev_type]:checked:first").val();
+	var liIndex = $("#table_" + firstCheck + "_li").index();
+	$('.collapsible').collapsible('open', liIndex);
 	
 	$("input:checkbox[name=source_site]:checked").each(function () {
         var source_site = $(this).val();
@@ -71,6 +73,14 @@ function updateTables(data, site) {
 	$.each(myData, function(index, value) { 
     	var idx = value["ora"].substring(0, 2);
 		$("#sintesi_" + site + "_" + idx).html(format(value));
+		$("#precipitazioni_" + site + "_" + idx).html(value["precipitazioni"]);
+		$("#temperatura_" + site + "_" + idx).html(value["temperatura"]);
+		$("#umidita_" + site + "_" + idx).html(value["umidita"]);
+		$("#pressione_" + site + "_" + idx).html(value["pressione"]);
+		$("#vento_" + site + "_" + idx).html(value["vento"]);
+		$("#neve_" + site + "_" + idx).html(value["neve"]);
+		$("#mare_" + site + "_" + idx).html(value["mare"]);
+		$("#uv_" + site + "_" + idx).html(value["uv"]);
     });
 	
 	

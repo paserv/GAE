@@ -8099,7 +8099,7 @@ function firstCapital(string) {
 }
 
 function format(json) {
-	var iconUrl = iconMap[json["label"].toLowerCase()];
+	var iconUrl = "static/img/" + json["label"].toLowerCase().replace(" ", "_") + ".png";  
 	if (!iconUrl) {
 		iconUrl = "static/img/none.png";
 	}
@@ -8107,12 +8107,6 @@ function format(json) {
 	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
 }
 
-//var header = [{"key": "ora", "label": "Ora"},
-//	  {"key": "meteoit", "label": "Meteo.it"},
-//	  {"key": "trebmeteo", "label": "3B Meteo"},
-//	  {"key": "meteoitalia", "label": "Meteo Italia"},
-//	  {"key": "ilmeteo", "label": "Il Meteo"},
-//	  ];
 
 var sourceSiteMap = 
 	{"meteoit": "Meteo.it",
@@ -8206,22 +8200,14 @@ function createTable(name, fromHour) {
   return container.html(table);
 }
 
-var iconMap = {
-		"sereno": "static/img/sereno.png",
-		"sereno e gelido": "static/img/sereno_gelido.png",
-		"quasi sereno": "static/img/quasi_sereno.png",
-		"poche nubi": "static/img/poche_nubi.png",
-		"parz nuvoloso": "static/img/parzialmente_nuvoloso.png",
-		"nuvoloso": "static/img/nuvoloso.png"
-}
-
 function setCookies() {
-	$("input:checkbox[name=prev_type]:checked").each(function () {
+	$("input:checkbox:checked").each(function () {
 		createCookie($(this).attr("id"), "checked", 15);
 	});
 	$("input:checkbox:not(:checked)").each(function () {
 		createCookie($(this).attr("id"), "notchecked", 15);
 	});
+	createCookie("comune", $("#search").val(), 15);
 }
 
 function initConfigs() {
@@ -8231,6 +8217,8 @@ function initConfigs() {
 			$('#' + key).attr('checked', false);
 		}
 	});
+	var comuneCookie = readCookie("comune");
+	$("#search").val(comuneCookie);
 }
 
 function createCookie(name,value,days) {
