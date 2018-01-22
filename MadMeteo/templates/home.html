@@ -18,8 +18,9 @@
 <div id="preloader" class="progress" style="display:none">
 	<div class="indeterminate"></div>
 </div>
-
-<ul id="result" style="display:none" class="collapsible" data-collapsible="expandable">
+</div>
+<div id="result" style="display:none" class="card-panel des">
+<ul class="collapsible" data-collapsible="expandable">
     <li id="table_sintesi_li" style="display:none">
       <div class="collapsible-header light-blue darken-4 white-text active"><img src="static/img/sintesi.png" class="home-ico">Sintesi</div>
       <div id="table_sintesi" class="collapsible-body home"></div>
@@ -33,15 +34,15 @@
       <div id="table_temperatura" class="collapsible-body home"></div>
     </li>
     <li id="table_umidita_li">
-      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/sintesi.png" class="home-ico">Umidita</div>
+      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/umidita.png" class="home-ico">Umidita</div>
       <div id="table_umidita" class="collapsible-body home"></div>
     </li>
     <li id="table_pressione_li">
-      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/sintesi.png" class="home-ico">Pressione</div>
+      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/pressione.png" class="home-ico">Pressione</div>
       <div id="table_pressione" class="collapsible-body home"></div>
     </li>
     <li id="table_vento_li">
-      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/sintesi.png" class="home-ico">Vento</div>
+      <div class="collapsible-header light-blue darken-4 white-text"><img src="static/img/vento.png" class="home-ico">Vento</div>
       <div id="table_vento" class="collapsible-body home"></div>
     </li>
     <li id="table_neve_li">
@@ -64,11 +65,7 @@
 
 <script>
 $(document).ready(function(){
-	populate_list();
-	populate_days();
-	$('.collapsible').collapsible();
-	$(".button-collapse").sideNav();
-	initConfigs();
+	init();
 });
 </script>
 {% endblock %}

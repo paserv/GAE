@@ -8098,8 +8098,16 @@ function firstCapital(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+var icons = ["coperto", "nuvoloso", "parz_nuvoloso", "poche_nubi", "quasi_sereno", "sereno_e_gelido", "sereno"];
+
 function format(json) {
-	var iconUrl = "static/img/" + json["label"].toLowerCase().replace(" ", "_") + ".png";  
+	var iconUrl;
+	if (icons.includes(json["label"].toLowerCase().replace(" ", "_"))) {
+		iconUrl = "static/img/" + json["label"].toLowerCase().replace(" ", "_") + ".png"; 
+	} else {
+		iconUrl = "static/img/none.png";
+	}
+	 
 	if (!iconUrl) {
 		iconUrl = "static/img/none.png";
 	}
@@ -8107,14 +8115,12 @@ function format(json) {
 	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
 }
 
-
 var sourceSiteMap = 
 	{"meteoit": "Meteo.it",
 	 "trebmeteo": "3B Meteo",
 	 "meteoitalia": "Meteo Italia",
 	 "ilmeteo": "Il Meteo"
 	};
-
 
 function getPreloader (id) {
 	return '<div id="' + id + '" class="preloader-wrapper small active">' +
@@ -8131,7 +8137,6 @@ function getPreloader (id) {
 			'</div>' +
 			'</div>';
 }
-
 
 function createTable(name, fromHour) {
 	

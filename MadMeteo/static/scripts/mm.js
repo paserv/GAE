@@ -1,3 +1,11 @@
+function init(){
+	populate_list();
+	populate_days();
+	$('.collapsible').collapsible();
+	$(".button-collapse").sideNav();
+	initConfigs();
+}
+
 function populate_list() {
 	$('input.autocomplete').autocomplete({
 		data: get_comuni(),
@@ -52,8 +60,11 @@ function render_page(comune, giorno) {
     });
 	
 	var firstCheck = $("input:checkbox[name=prev_type]:checked:first").val();
-	var liIndex = $("#table_" + firstCheck + "_li").index();
-	$('.collapsible').collapsible('open', liIndex);
+	var liElement = $("#table_" + firstCheck + "_li");
+	if (!liElement.hasClass("active")) {
+		var liIndex = $("#table_" + firstCheck + "_li").index();
+		$('.collapsible').collapsible('open', liIndex);
+	}
 }
 
 function showResult() {
