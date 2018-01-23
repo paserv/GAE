@@ -2,7 +2,20 @@ function init(){
 	populate_list();
 	populate_days();
 	$('.collapsible').collapsible();
-	$(".button-collapse").sideNav();
+	$('.button-collapse').sideNav({
+	      draggable: true,
+	      onClose: function(el) { },
+	    }
+	  );
+	$('#sidebtn').on("click",function(){
+		$(".button-collapse").sideNav('hide');
+	});
+	//$('#search').on("click",function(){
+	//	$("#search").val(""); 
+	//})
+	$('#search').on("focus",function(){
+		$("#search").val(""); 
+	})
 	initConfigs();
 }
 

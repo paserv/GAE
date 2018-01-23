@@ -8112,6 +8112,9 @@ var iconMap = {
 		"sereno con veli": "wi-day-haze",
 		"velature sparse": "wi-day-haze",
 		"pioggia debole": "wi-sprinkle",
+		"sereno e ventoso": "wi-day-cloudy-gusts",
+		"foschia": "wi-day-haze",
+		"nebbia e schiarite": "wi-day-fog",
 };
 
 function format(json) {
@@ -8121,7 +8124,7 @@ function format(json) {
 	}
 	//var icon = "<img src='" + iconUrl + "' alt='" + json["label"] + "' height='42' width='42'>";
 	var icon = "<i class='wi " + icon + " weatherico'></i>";
-	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
+	return icon + "<br>" + firstCapital(json["label"]) + "<br><div class='temp-prec'><i class='wi wi-thermometer-exterior'></i>&nbsp;" + json["temperatura"] + "<br><i class='wi wi-raindrop'></i>&nbsp;" + json["precipitazioni"] + "</div>";
 }
 
 var sourceSiteMap = 
