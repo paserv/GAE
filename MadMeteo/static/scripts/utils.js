@@ -8098,20 +8098,29 @@ function firstCapital(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-var icons = ["coperto", "nuvoloso", "parz_nuvoloso", "poche_nubi", "quasi_sereno", "sereno_e_gelido", "sereno"];
+var iconMap = {
+		"coperto": "wi-cloudy",
+		"nuvoloso": "wi-cloudy",
+		"parz nuvoloso": "wi-day-cloudy",
+		"poco nuvoloso": "wi-day-sunny-overcast",
+		"poche nubi": "wi-day-sunny-overcast",
+		"quasi sereno": "wi-day-sunny-overcast",
+		"sereno e gelido": "wi-day-sunny",
+		"sereno": "wi-day-sunny",
+		"nuvoloso con pioggia debole": "wi-sprinkle",
+		"variabile": "wi-day-sunny-overcast",
+		"sereno con veli": "wi-day-haze",
+		"velature sparse": "wi-day-haze",
+		"pioggia debole": "wi-sprinkle",
+};
 
 function format(json) {
-	var iconUrl;
-	if (icons.includes(json["label"].toLowerCase().replace(" ", "_"))) {
-		iconUrl = "static/img/" + json["label"].toLowerCase().replace(" ", "_") + ".png"; 
-	} else {
-		iconUrl = "static/img/none.png";
+	var icon = iconMap[json["label"].toLowerCase()];
+	if (!icon) {
+		icon = "wi-degrees";
 	}
-	 
-	if (!iconUrl) {
-		iconUrl = "static/img/none.png";
-	}
-	var icon = "<img src='" + iconUrl + "' alt='" + json["label"] + "' height='42' width='42'>";
+	//var icon = "<img src='" + iconUrl + "' alt='" + json["label"] + "' height='42' width='42'>";
+	var icon = "<i class='wi " + icon + " weatherico'></i>";
 	return icon + "<br>" + firstCapital(json["label"]) + "<br>" + json["temperatura"] + "<br>" + json["precipitazioni"];
 }
 

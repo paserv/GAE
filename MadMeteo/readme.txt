@@ -6,3 +6,4 @@ pip install -t lib/ beautifulsoup4
 
 
 gcloud --verbosity debug app deploy app.yaml --project testendpoint-162810
+gcloud --verbosity debug app deploy app.yaml --project mad-meteo
