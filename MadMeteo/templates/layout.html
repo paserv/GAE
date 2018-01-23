@@ -9,6 +9,7 @@
       <link type="text/css" rel="stylesheet" href="/static/content/jquery-ui.theme.min.css">
       <link type="text/css" rel="stylesheet" href="/static/content/site.css" />
       <link type="text/css" rel="stylesheet" href="/static/content/jquery.dynatable.css" />
+      <link type="text/css" rel="stylesheet" href="/static/content/weather-icons.min.css" />
       <meta name="theme-color" content="#ffffff">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
       <meta property="og:title" content="Mad Meteo">
@@ -30,67 +31,68 @@
    </head>
    <body>
       <header>
-         <nav class="top-nav blue lighten-5">
+         <nav class="top-nav blue lighten-5" style="height:80px">
 	         <div class="nav-wrapper">
-                  <a href="/" class="brand-logo right" style="margin-right: 10px"><i class="material-icons">wb_sunny</i></a>
-                  <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full show-on-large"><i class="material-icons" style="color:#3f51b5">menu</i></a>
+                  <a href="/" class="brand-logo right" style="margin-right: 10px"><img src="static/img/logomad.png" class="home-logo" /></a>
+                  <a href="#" data-activates="nav-mobile" class="button-collapse top-nav full show-on-large" style="margin-left:0"><i class="material-icons light-blue darken-3" style="height:80px; width:40px; line-height: 80px; font-size: xx-large;">keyboard_arrow_right</i></a>
              </div>
         </nav>
         <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
-            <li class="check">Fonti Previsioni</li>
+            <li class="check"><strong class="conftype">Fonti Previsioni</strong></li>
             <li><div class="divider"></div></li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="meteoit_check" name="source_site" value="meteoit" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="meteoit_check" name="source_site" value="meteoit" checked="checked" />
               <label for="meteoit_check">Meteo.it</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="3bmeteo_check" name="source_site" value="trebmeteo" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="3bmeteo_check" name="source_site" value="trebmeteo" checked="checked" />
               <label for="3bmeteo_check">3BMeteo</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="ilmeteo_check" name="source_site" value="ilmeteo" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="ilmeteo_check" name="source_site" value="ilmeteo" checked="checked" />
               <label for="ilmeteo_check">IlMeteo</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="meteoitalia_check" name="source_site" value="meteoitalia" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="meteoitalia_check" name="source_site" value="meteoitalia" checked="checked" />
               <label for="meteoitalia_check">Meteo Italia</label>
             </li>
-            <li class="check">Tipologie Previsione</li>
+            <li><div>&nbsp;</div></li>
+            <li class="check"><strong class="conftype">Tipologie Previsione</strong></li>
             <li><div class="divider"></div></li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="sintesi_check" name="prev_type" value="sintesi" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="sintesi_check" name="prev_type" value="sintesi" checked="checked" />
               <label for="sintesi_check">Sintesi</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="precipitazioni_check" name="prev_type" value="precipitazioni" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="precipitazioni_check" name="prev_type" value="precipitazioni" checked="checked" />
               <label for="precipitazioni_check">Precipitazioni</label>
             </li>
              <li class="check">
-              <input type="checkbox" class="filled-in" id="temperature_check" name="prev_type" value="temperatura" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="temperature_check" name="prev_type" value="temperatura" checked="checked" />
               <label for="temperature_check">Temperature</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="umidita_check" name="prev_type" value="umidita" checked="checked" />
-              <label for="umidita_check">Umidita</label>
+              <input type="checkbox" class="filled-in checkhome" id="umidita_check" name="prev_type" value="umidita" checked="checked" />
+              <label for="umidita_check">Umidit&agrave;</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="pressione_check" name="prev_type" value="pressione" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="pressione_check" name="prev_type" value="pressione" checked="checked" />
               <label for="pressione_check">Pressione</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="vento_check" name="prev_type" value="vento" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="vento_check" name="prev_type" value="vento" checked="checked" />
               <label for="vento_check">Vento</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="neve_check" name="prev_type" value="neve" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="neve_check" name="prev_type" value="neve" checked="checked" />
               <label for="neve_check">Neve</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="mare_check" name="prev_type" value="mare" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="mare_check" name="prev_type" value="mare" checked="checked" />
               <label for="mare_check">Mare</label>
             </li>
             <li class="check">
-              <input type="checkbox" class="filled-in" id="uv_check" name="prev_type" value="uv" checked="checked" />
+              <input type="checkbox" class="filled-in checkhome" id="uv_check" name="prev_type" value="uv" checked="checked" />
               <label for="uv_check">UV</label>
             </li>
         </ul>

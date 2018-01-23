@@ -8087,7 +8087,7 @@ function populate_days() {
 	$("#1").html("Domani<br>" + tomorrowDay + " " + tomorrowMonth);
 	$("#2").html(dayOfWeek + "<br>" + dayAfterTomorrowDay + " " + dayAfterTomorrowMonth);
 	
-	$("#0").addClass( "light-blue darken-4 white-text selected" );
+	$("#0").addClass( "light-blue darken-3 white-text selected" );
 	
 	$("#0").click(function(){ dayclick(0, 1, 2); });
 	$("#1").click(function(){ dayclick(1, 0, 2); });
