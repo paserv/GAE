@@ -7,12 +7,9 @@ function init(){
 	      onClose: function(el) { },
 	    }
 	  );
-	$('#sidebtn').on("click",function(){
+	$('#closesidenavbtn').on("click",function(){
 		$(".button-collapse").sideNav('hide');
 	});
-	//$('#search').on("click",function(){
-	//	$("#search").val(""); 
-	//})
 	$('#search').on("focus",function(){
 		$("#search").val(""); 
 	})
