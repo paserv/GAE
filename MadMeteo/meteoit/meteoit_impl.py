@@ -6,26 +6,28 @@ from google.appengine.api import urlfetch
 import datetime
 import logging
 import sys, traceback
+import unicodedata
 
 class ImplMeteoIt(AbstractMeteo):
     base_url = 'http://www.meteo.it/meteo/'
     name = 'meteoit'
     
     def get_query_url(self, comune, day):
-        nome_comune = comune.replace(' ', '-')
-        istat_code = dc.get_istat_code(comune)[-5:]
+        nome_com = comune.replace('\'', ' ').replace(' ', '-').lower()
+        nome_comune = unicodedata.normalize('NFKD', nome_com).encode('ASCII', 'ignore')
+        istat_code = dc.get_istat_code(comune).lstrip("0")
         return {
-            '0': self.base_url + nome_comune.lower() + '-' + istat_code,
-            '1': self.base_url + nome_comune.lower() + '-domani-' + istat_code,
-            '2': self.base_url + nome_comune.lower() + '-dopodomani-' + istat_code,
-            '3': self.base_url + nome_comune.lower() + '-3-giorni-' + istat_code,
-            '4': self.base_url + nome_comune.lower() + '-4-giorni-' + istat_code,
-            '5': self.base_url + nome_comune.lower() + '-5-giorni-' + istat_code,
-            '6': self.base_url + nome_comune.lower() + '-6-giorni-' + istat_code,
+            '0': self.base_url + nome_comune + '-' + istat_code,
+            '1': self.base_url + nome_comune + '-domani-' + istat_code,
+            '2': self.base_url + nome_comune + '-dopodomani-' + istat_code,
+            '3': self.base_url + nome_comune + '-3-giorni-' + istat_code,
+            '4': self.base_url + nome_comune + '-4-giorni-' + istat_code,
+            '5': self.base_url + nome_comune + '-5-giorni-' + istat_code,
+            '6': self.base_url + nome_comune + '-6-giorni-' + istat_code,
         }.get(day)
         
     def get_meteo_by_day(self, comune, day):
-        logging.debug('get_meteo_by_day: ' + comune + ' - ' + day)
+        logging.debug('Get Meteo.it: ' + comune + ' - ' + day)
         result = {}
         result[self.name] = []
         try:

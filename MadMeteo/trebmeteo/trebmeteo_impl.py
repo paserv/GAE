@@ -3,13 +3,15 @@ from abstract_meteo import AbstractMeteo
 from trebmeteo_model import DayMeteo
 from google.appengine.api import urlfetch
 import sys, traceback
+import unicodedata
 
 class ImplTreBMeteo(AbstractMeteo):
     base_url = 'https://www.3bmeteo.com/meteo/'
     name = 'trebmeteo'
     
     def get_query_url(self, comune, day):
-        nome_comune = comune.replace(' ', '+')
+        nome_com = comune.replace(' ', '+')
+        nome_comune = unicodedata.normalize('NFKD', nome_com).encode('ASCII', 'ignore')
         return {
             '0': self.base_url + nome_comune.lower(),
             '1': self.base_url + nome_comune.lower() + '/dettagli_orari/1',
