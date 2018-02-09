@@ -71,8 +71,8 @@ class ImplMeteoIt(AbstractMeteo):
                     currMeteo.label = labels[i].find('span').get_text(strip=True).strip()
                     #currMeteo.svg = str(labels[i].find('svg'))
                     
-                    currMeteo.temperatura = temperature[i + 1].get_text(strip=True).strip().encode('ascii','ignore') + u'\N{DEGREE SIGN}'
-                    currMeteo.precipitazioni = precipitazioni[i + 1].find('span').get_text(strip=True).strip()
+                    currMeteo.temperatura = temperature[i + 1].get_text(strip=True).strip().encode('ascii','ignore') + u'\N{DEGREE SIGN}' + " C"
+                    currMeteo.precipitazioni = precipitazioni[i + 1].find('span').get_text(strip=True).strip()[:-3] + '.0 mm' 
                     currMeteo.vento = vento[i + 1].find('span').get_text(strip=True).strip() + ' Km/h'
                     currMeteo.umidita = umidita[i + 1].get_text(strip=True).strip()
                     currMeteo.pressione = pressione[i + 1].get_text(strip=True).strip() + ' mbar'

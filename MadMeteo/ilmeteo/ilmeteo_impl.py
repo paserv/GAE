@@ -38,50 +38,70 @@ class ImplIlMeteo(AbstractMeteo):
                 light_rows = parsed_html.body.find_all('tr', attrs={'class':'light'})
                 
                 for dark_row in dark_rows:
-                    ora = dark_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
-                    label = dark_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
-                    temperatura = dark_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip()
+                    currMeteo = DayMeteo()
+                    currMeteo.ora = dark_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
+                    currMeteo.label = dark_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
+                    currMeteo.temperatura = dark_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip() + " C"
                     
                     col6 = dark_row.find('td', attrs={'class':'col6'})
-                    vento = col6.find('abbr').get_text(strip=True).strip()
-                    umidita = col6.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.vento_descr = col6.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
+                    if col6.find('abbr'):
+                        currMeteo.vento = col6.find('abbr').text + " Km/h"
+                    else:
+                        currMeteo.vento = "0 Km/h"
+                    currMeteo.umidita = col6.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
                     
                     col7 = dark_row.find('td', attrs={'class':'col7'})
-                    precipitazioni = col7.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
-                    grandine = col7.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.precipitazioni_descr = col7.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
+                    currMeteo.precipitazioni = col7.find('span').text.replace(currMeteo.precipitazioni_descr, '')
+                    if currMeteo.precipitazioni == ' ':
+                        currMeteo.precipitazioni = '0.0 mm'
+                    currMeteo.grandine = col7.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
                     
-                    pressione = dark_row.find('td', attrs={'class':'col8'}).find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.pressione = dark_row.find('td', attrs={'class':'col8'}).find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()[:-2] + " mbar"
                     
                     col9 = dark_row.find('td', attrs={'class':'col9'})
-                    visibilita = col9.find('span').get_text(strip=True).strip() + " " + col9.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
-                    temp_percepita = col9.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.visibilita_descr = col9.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
+                    currMeteo.visibilita = col9.find('span').text.replace(currMeteo.visibilita_descr, '')
+                    currMeteo.temp_percepita = col9.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()[:-1] + " C"
                     
                     col10 = dark_row.find('td', attrs={'class':'col10'})
-                    ur = col10.find('span').get_text(strip=True).strip()
-                    uv = col10.find('abbr').get_text(strip=True).strip()
-                    
+                    currMeteo.ur = col10.find('span').get_text(strip=True).strip()
+                    currMeteo.uv = col10.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    result[self.name].append(currMeteo.__dict__)
+                                                           
                 for light_row in light_rows:
-                    ora = light_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
-                    label = light_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
-                    temperatura = light_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip()
+                    currMeteo = DayMeteo()
+                    currMeteo.ora = light_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
+                    currMeteo.label = light_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
+                    currMeteo.temperatura = light_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip() + " C"
                     
                     col6 = light_row.find('td', attrs={'class':'col6'})
-                    vento = col6.find('abbr').get_text(strip=True).strip()
-                    umidita = col6.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.vento_descr = col6.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
+                    if col6.find('abbr'):
+                        currMeteo.vento = col6.find('abbr').text + " Km/h"
+                    else:
+                        currMeteo.vento = "0 Km/h"
+                    currMeteo.umidita = col6.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
                     
                     col7 = light_row.find('td', attrs={'class':'col7'})
-                    precipitazioni = col7.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
-                    grandine = col7.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.precipitazioni_descr = col7.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
+                    currMeteo.precipitazioni = col7.find('span').text.replace(currMeteo.precipitazioni_descr, '')
+                    if currMeteo.precipitazioni == ' ':
+                        currMeteo.precipitazioni = '0.0 mm'
+                    currMeteo.grandine = col7.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
                     
-                    pressione = light_row.find('td', attrs={'class':'col8'}).find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.pressione = light_row.find('td', attrs={'class':'col8'}).find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()[:-2] + " mbar"
                     
                     col9 = light_row.find('td', attrs={'class':'col9'})
-                    visibilita = col9.find('span').get_text(strip=True).strip() + " " + col9.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
-                    temp_percepita = col7.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    currMeteo.visibilita_descr = col9.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
+                    currMeteo.visibilita = col9.find('span').text.replace(currMeteo.visibilita_descr, '')
+                    currMeteo.temp_percepita = col9.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()[:-1] + " C"
                     
                     col10 = light_row.find('td', attrs={'class':'col10'})
-                    ur = col10.find('span').get_text(strip=True).strip()
-                    uv = col10.find('abbr').get_text(strip=True).strip()
+                    currMeteo.ur = col10.find('span').get_text(strip=True).strip()
+                    currMeteo.uv = col10.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
+                    result[self.name].append(currMeteo.__dict__)
         except:
             traceback.print_exc(file=sys.stdout)
         finally:             

@@ -56,7 +56,7 @@ class ImplTreBMeteo(AbstractMeteo):
                     if label:
                         currMeteo.label = row.find('div', attrs={'class':'col-xs-2-4'}).get_text(strip=True).strip()
                     temps = row.find_all('span', attrs={'class':'switchcelsius'})
-                    currMeteo.temperatura = temps[0].get_text(strip=True).strip()
+                    currMeteo.temperatura = temps[0].get_text(strip=True).strip() + " C"
                     currMeteo.percepita = temps[1].get_text(strip=True).strip()
                     if len(temps) == 3:
                         currMeteo.temp_vento = temps[2].get_text(strip=True).strip()
