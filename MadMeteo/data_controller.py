@@ -25,3 +25,8 @@ def get_id_ilmeteo(comune):
     key = ndb.Key('Comuni', comune)
     entity = key.get()
     return entity.id_ilmeteoit
+
+def get_regione(comune):
+    key = ndb.Key('Comuni', comune)
+    entity = key.get()
+    return entity.regione

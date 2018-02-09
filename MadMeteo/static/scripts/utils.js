@@ -8256,7 +8256,7 @@ function format(json) {
 var sourceSiteMap = 
 	{"meteoit": "Meteo.it",
 	 "trebmeteo": "3B Meteo",
-	 "meteoitalia": "Meteo Italia",
+	 "meteolive": "Meteo Live",
 	 "ilmeteo": "Il Meteo"
 	};
 
