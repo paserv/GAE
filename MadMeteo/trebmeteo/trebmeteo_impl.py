@@ -56,11 +56,13 @@ class ImplTreBMeteo(AbstractMeteo):
                     if label:
                         currMeteo.label = row.find('div', attrs={'class':'col-xs-2-4'}).get_text(strip=True).strip()
                     temps = row.find_all('span', attrs={'class':'switchcelsius'})
-                    currMeteo.temperatura = temps[0].get_text(strip=True).strip() + " C"
+                    currMeteo.temperatura_value = temps[0].get_text(strip=True).strip()[:-1]
+                    currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"
                     currMeteo.percepita = temps[1].get_text(strip=True).strip()
                     if len(temps) == 3:
                         currMeteo.temp_vento = temps[2].get_text(strip=True).strip()
                     currMeteo.precipitazioni = row.find('div', attrs={'class':'altriDati-precipitazioni'}).get_text(strip=True).strip()
+                    currMeteo.precipitazioni_value = currMeteo.precipitazioni[:-3]
                     currMeteo.vento = row.find('div', attrs={'class':'altriDati-venti'}).get_text().strip().split(' ')[0] + ' Km/h'
                     currMeteo.umidita = row.find('div', attrs={'class':'altriDati-umidita'}).get_text(strip=True).strip()
                     qn = row.find('div', attrs={'class':'altriDati-QN'})

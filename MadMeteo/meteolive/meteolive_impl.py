@@ -45,10 +45,18 @@ class ImplMeteoLive(AbstractMeteo):
                     currMeteo.ora = cols[0].text
                     currMeteo.label = cols[1].text
                     currMeteo.temperatura_descr = cols[2].find('small').text
-                    currMeteo.temperatura = cols[2].text.replace(currMeteo.temperatura_descr, '')
+                    currMeteo.temperatura_value = cols[2].text.replace(currMeteo.temperatura_descr, '')[:-2]
+                    currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"
                     currMeteo.umidita_descr = cols[3].find('small').text
                     currMeteo.umidita = cols[3].text.replace(currMeteo.umidita_descr, '')
                     currMeteo.precipitazioni = cols[4].text
+                    currMeteo.precipitazioni_descr = cols[4].find('div').text
+                    currMeteo.precipitazioni_value = currMeteo.precipitazioni.replace(currMeteo.precipitazioni_descr, '')
+                    if cols[4].find('small'):
+                        currMeteo.precipitazioni_prob = cols[4].find('small').text
+                        currMeteo.precipitazioni_value = currMeteo.precipitazioni_value.replace(currMeteo.precipitazioni_prob, '')
+                    currMeteo.precipitazioni_value = currMeteo.precipitazioni_value[:-2]
+                    
                     currMeteo.vento_descr = cols[5].find('small').text
                     currMeteo.vento = cols[5].text.replace(currMeteo.vento_descr, '') + ' Km/h'
                     currMeteo.visibilita_descr = cols[7].find('small').text

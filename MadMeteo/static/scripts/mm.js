@@ -1,3 +1,5 @@
+var previsioni = {}
+
 function init(){
 	populate_list();
 	populate_days();
@@ -30,6 +32,7 @@ function populate_list() {
 }
 
 function find(){
+	previsioni = {}
 	var comune = $("#search").val().split('(')[0].trim();
 	if (comune != "") {
 		var giorno = $("#rowhome").find(".selected").attr('id');
@@ -66,6 +69,7 @@ function render_page(comune, giorno) {
 	       		$(this).hide();
 	    	});
 	       	showResult();
+	       	tryDrawChart(data, source_site);
     	});
     });
 	
@@ -77,6 +81,34 @@ function render_page(comune, giorno) {
 	}
 }
 
+function tryDrawChart(data, source_site) {
+	previsioni[source_site] = data;
+	var candraw = true;
+	$("input:checkbox[name=source_site]:checked").each(function () {
+		var source_site = $(this).val();
+		if (!(source_site in previsioni)) {
+			candraw = false;
+		}
+	});
+	if (candraw) {
+		$("#graph").show();
+		$.post( "test", function( data ) {
+	          Highcharts.setOptions({
+		             lang: {
+		               downloadJPEG: "Download immagine JPEG",
+		               downloadPDF: "Download immagine PDF",
+		               downloadPNG: "Download immagine PNG",
+		               downloadSVG: "Download immagine SVF",
+		               printChart: "Stampa Grafico",
+		               weekdays: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
+		               months: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+		             }
+		           });
+		        window.meteogram = new Meteogram(data, 'graph');
+		});
+	}
+}
+
 function showResult() {
 	$("#result").show();
 	$("#preloader").hide();
@@ -85,6 +117,7 @@ function showResult() {
 function hideResult() {
 	$("#preloader").show();
 	$("#result").hide();
+	$("#graph").hide();
 	$("li[id$=li]").each(function () {
 		$(this).hide();
 	});	

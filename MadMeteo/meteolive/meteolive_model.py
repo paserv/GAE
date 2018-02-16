@@ -3,10 +3,13 @@ class DayMeteo():
     ora = None
     label = None
     temperatura = None
+    temperatura_value = None
     temperatura_descr = None
     umidita = None
     umidita_descr = None
     precipitazioni = None
+    precipitazioni_value = None
+    precipitazioni_prob = None
     precipitazioni_descr = None
     vento = None
     vento_descr = None

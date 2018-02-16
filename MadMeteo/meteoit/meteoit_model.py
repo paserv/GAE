@@ -4,7 +4,9 @@ class DayMeteo():
     urlIcona = None
     label = None
     temperatura = None
+    temperatura_value = None
     precipitazioni = None
+    precipitazioni_value = None
     vento = None
     umidita = None
     pressione = None

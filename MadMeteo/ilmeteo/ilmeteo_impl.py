@@ -41,7 +41,9 @@ class ImplIlMeteo(AbstractMeteo):
                     currMeteo = DayMeteo()
                     currMeteo.ora = dark_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
                     currMeteo.label = dark_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
-                    currMeteo.temperatura = dark_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip() + " C"
+                    currMeteo.temperatura_value = dark_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip()[:-1]
+                    currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"
+
                     
                     col6 = dark_row.find('td', attrs={'class':'col6'})
                     currMeteo.vento_descr = col6.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
@@ -54,8 +56,10 @@ class ImplIlMeteo(AbstractMeteo):
                     col7 = dark_row.find('td', attrs={'class':'col7'})
                     currMeteo.precipitazioni_descr = col7.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
                     currMeteo.precipitazioni = col7.find('span').text.replace(currMeteo.precipitazioni_descr, '')
+                    currMeteo.precipitazioni_value= currMeteo.precipitazioni[:-3]
                     if currMeteo.precipitazioni == ' ':
                         currMeteo.precipitazioni = '0.0 mm'
+                        currMeteo.precipitazioni_value = '0'
                     currMeteo.grandine = col7.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
                     
                     currMeteo.pressione = dark_row.find('td', attrs={'class':'col8'}).find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()[:-2] + " mbar"
@@ -74,7 +78,8 @@ class ImplIlMeteo(AbstractMeteo):
                     currMeteo = DayMeteo()
                     currMeteo.ora = light_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
                     currMeteo.label = light_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
-                    currMeteo.temperatura = light_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip() + " C"
+                    currMeteo.temperatura_value = light_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip()[:-1]
+                    currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"
                     
                     col6 = light_row.find('td', attrs={'class':'col6'})
                     currMeteo.vento_descr = col6.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
@@ -87,8 +92,10 @@ class ImplIlMeteo(AbstractMeteo):
                     col7 = light_row.find('td', attrs={'class':'col7'})
                     currMeteo.precipitazioni_descr = col7.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
                     currMeteo.precipitazioni = col7.find('span').text.replace(currMeteo.precipitazioni_descr, '')
+                    currMeteo.precipitazioni_value= currMeteo.precipitazioni[:-3]
                     if currMeteo.precipitazioni == ' ':
                         currMeteo.precipitazioni = '0.0 mm'
+                        currMeteo.precipitazioni_value = '0'
                     currMeteo.grandine = col7.find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()
                     
                     currMeteo.pressione = light_row.find('td', attrs={'class':'col8'}).find('span', attrs={'class':'hdata'}).get_text(strip=True).strip()[:-2] + " mbar"

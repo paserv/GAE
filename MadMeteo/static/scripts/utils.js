@@ -8184,7 +8184,6 @@ function getHour(){
 
 function dayclick(selection, o1, o2) {
 	$("#preloader").show();
-	//clearData();//$("#result").html("");
 	$("#result").hide();
 	$("#" + selection).addClass( "light-blue darken-4 white-text selected" );
 	$("#" + o1).removeClass( "light-blue darken-4 white-text selected" );
@@ -8224,7 +8223,7 @@ function firstCapital(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-var iconMap = {
+var iconMapWi = {
 		"coperto": "wi-cloudy",
 		"nuvoloso": "wi-cloudy",
 		"parz nuvoloso": "wi-day-cloudy",
@@ -8243,13 +8242,32 @@ var iconMap = {
 		"nebbia e schiarite": "wi-day-fog",
 };
 
+var iconMap = {
+		"coperto": "04.svg",
+		"nuvoloso": "04.svg",
+		"parz nuvoloso": "02d.svg",
+		"poco nuvoloso": "02d.svg",
+		"poche nubi": "02d.svg",
+		"quasi sereno": "02d.svg",
+		"sereno e gelido": "01d.svg",
+		"sereno": "01d.svg",
+		"nuvoloso con pioggia debole": "46.svg",
+		"variabile": "05d.svg",
+		"sereno con veli": "01m.svg",
+		"velature sparse": "01m.svg",
+		"pioggia debole": "46.svg",
+		"sereno e ventoso": "01d.svg",
+		"foschia": "15.svg",
+		"nebbia e schiarite": "15.svg",
+};
+
 function format(json) {
 	var icon = iconMap[json["label"].toLowerCase()];
 	if (!icon) {
-		icon = "wi-degrees";
+		icon = "50.svg";
 	}
-	//var icon = "<img src='" + iconUrl + "' alt='" + json["label"] + "' height='42' width='42'>";
-	var icon = "<i class='wi " + icon + " weatherico'></i>";
+	var icon = "<img src='static/img/yr_weather_symbols/" + icon + "' height='60' width='60'>";
+	//var icon = "<i class='wi " + icon + " weatherico'></i>";
 	return icon + "<br>" + firstCapital(json["label"]) + "<br><div class='temp-prec'><i class='wi wi-thermometer-exterior'></i>&nbsp;" + json["temperatura"] + "<br><i class='wi wi-raindrop'></i>&nbsp;" + json["precipitazioni"] + "</div>";
 }
 

@@ -4,6 +4,7 @@ class DayMeteo():
     label = None
     temperatura = None
     precipitazioni = None
+    precipitazioni_value = None
     vento = None
     umidita = None
     percepita = None
