@@ -82,6 +82,7 @@ function render_page(comune, giorno) {
 }
 
 function tryDrawChart(data, source_site) {
+	$("#graph").show();
 	previsioni[source_site] = data;
 	var candraw = true;
 	$("input:checkbox[name=source_site]:checked").each(function () {
@@ -91,7 +92,6 @@ function tryDrawChart(data, source_site) {
 		}
 	});
 	if (candraw) {
-		$("#graph").show();
 		$.post( "test", function( data ) {
 	          Highcharts.setOptions({
 		             lang: {
