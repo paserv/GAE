@@ -92,19 +92,25 @@ function tryDrawChart(data, source_site) {
 		}
 	});
 	if (candraw) {
-		$.post( "test", function( data ) {
-	          Highcharts.setOptions({
-		             lang: {
-		               downloadJPEG: "Download immagine JPEG",
-		               downloadPDF: "Download immagine PDF",
-		               downloadPNG: "Download immagine PNG",
-		               downloadSVG: "Download immagine SVF",
-		               printChart: "Stampa Grafico",
-		               weekdays: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
-		               months: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
-		             }
-		           });
-		        window.meteogram = new Meteogram(data, 'graph');
+		$.ajax({
+			  type: "POST",
+			  url: "forecast_aggregation",
+			  data: JSON.stringify(previsioni),
+			  success: function( data ) {
+		          Highcharts.setOptions({
+			             lang: {
+			               downloadJPEG: "Download immagine JPEG",
+			               downloadPDF: "Download immagine PDF",
+			               downloadPNG: "Download immagine PNG",
+			               downloadSVG: "Download immagine SVF",
+			               printChart: "Stampa Grafico",
+			               weekdays: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
+			               months: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+			             }
+			           });
+			        window.meteogram = new Meteogram(data, 'graph');
+			  	},
+			  	dataType: 'json'
 		});
 	}
 }

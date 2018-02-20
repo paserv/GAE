@@ -43,7 +43,8 @@ class ImplMeteoLive(AbstractMeteo):
                     currMeteo = DayMeteo()
                     cols = row.find_all('td')
                     currMeteo.ora = cols[0].text
-                    currMeteo.label = cols[1].text
+                    label = cols[1].text
+                    currMeteo.setLabel(label, currMeteo.ora)
                     currMeteo.temperatura_descr = cols[2].find('small').text
                     currMeteo.temperatura_value = cols[2].text.replace(currMeteo.temperatura_descr, '')[:-2]
                     currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"

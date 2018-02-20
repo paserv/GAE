@@ -54,7 +54,8 @@ class ImplTreBMeteo(AbstractMeteo):
                     currMeteo.ora = row.find('div', attrs={'class':'col-xs-1-4'}).get_text(strip=True).strip()
                     label = row.find('div', attrs={'class':'col-xs-2-4'})
                     if label:
-                        currMeteo.label = row.find('div', attrs={'class':'col-xs-2-4'}).get_text(strip=True).strip()
+                        label = row.find('div', attrs={'class':'col-xs-2-4'}).get_text(strip=True).strip()
+                    currMeteo.setLabel(label, currMeteo.ora)
                     temps = row.find_all('span', attrs={'class':'switchcelsius'})
                     currMeteo.temperatura_value = temps[0].get_text(strip=True).strip()[:-1]
                     currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"

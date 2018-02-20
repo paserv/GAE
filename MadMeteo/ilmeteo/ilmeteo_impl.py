@@ -3,7 +3,6 @@ from abstract_meteo import AbstractMeteo
 import data_controller as dc
 from ilmeteo_model import DayMeteo
 from google.appengine.api import urlfetch
-import datetime
 import logging
 import sys, traceback
 
@@ -40,10 +39,10 @@ class ImplIlMeteo(AbstractMeteo):
                 for dark_row in dark_rows:
                     currMeteo = DayMeteo()
                     currMeteo.ora = dark_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
-                    currMeteo.label = dark_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
+                    label = dark_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
+                    currMeteo.setLabel(label, currMeteo.ora)                   
                     currMeteo.temperatura_value = dark_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip()[:-1]
                     currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"
-
                     
                     col6 = dark_row.find('td', attrs={'class':'col6'})
                     currMeteo.vento_descr = col6.find('span', attrs={'class':'descri'}).get_text(strip=True).strip()
@@ -77,7 +76,8 @@ class ImplIlMeteo(AbstractMeteo):
                 for light_row in light_rows:
                     currMeteo = DayMeteo()
                     currMeteo.ora = light_row.find('span', attrs={'class':'ora'}).get_text(strip=True).strip() + ":00"
-                    currMeteo.label = light_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
+                    label = light_row.find('td', attrs={'class':'col3'}).get_text(strip=True).strip()
+                    currMeteo.setLabel(label, currMeteo.ora)
                     currMeteo.temperatura_value = light_row.find('td', attrs={'class':'col4'}).get_text(strip=True).strip()[:-1]
                     currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"
                     

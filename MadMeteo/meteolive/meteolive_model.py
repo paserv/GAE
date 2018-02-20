@@ -1,14 +1,9 @@
-class DayMeteo():
-    giorno = None
-    ora = None
-    label = None
-    temperatura = None
-    temperatura_value = None
+from abstract_model import AbstractModel
+
+class DayMeteo(AbstractModel):
     temperatura_descr = None
     umidita = None
     umidita_descr = None
-    precipitazioni = None
-    precipitazioni_value = None
     precipitazioni_prob = None
     precipitazioni_descr = None
     vento = None

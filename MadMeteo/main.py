@@ -1,12 +1,10 @@
 import os
-import json
 from flask import Flask, render_template, send_from_directory, request, jsonify, Response
 from meteoit.meteoit_impl import ImplMeteoIt
 from trebmeteo.trebmeteo_impl import ImplTreBMeteo
 from ilmeteo.ilmeteo_impl import ImplIlMeteo
 from meteolive.meteolive_impl import ImplMeteoLive
 from prev_model import Previsione, PrevisioneOraria
-import logging
 
 app = Flask(__name__)
 
@@ -50,8 +48,9 @@ def meteolive_prev(comune, giorno):
     meteo_live_result = meteo_live.get_meteo_by_day(comune, giorno)
     return jsonify(meteo_live_result)
 
-@app.route('/test', methods=['POST'])
+@app.route('/forecast_aggregation', methods=['POST'])
 def test():
+    test = request.get_json()
     previsioni = []
     prev1 = PrevisioneOraria("2018-02-13T11:00:00", "2018-02-13T12:00:00", "09", "Piovoso", 1, 16, 58, 5, 999.6, 2, 0.5)
     prev2 = PrevisioneOraria("2018-02-13T12:00:00", "2018-02-13T13:00:00", "09", "Piovoso Assai", 0.6, 162.6, 8.8, 4, 999.4)

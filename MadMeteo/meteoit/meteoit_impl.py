@@ -1,9 +1,8 @@
 from bs4 import BeautifulSoup
 from abstract_meteo import AbstractMeteo
 import data_controller as dc
-from meteoit_model import DayMeteo, WeekMeteo
+from meteoit_model import DayMeteo
 from google.appengine.api import urlfetch
-import datetime
 import logging
 import sys, traceback
 import unicodedata
@@ -68,8 +67,8 @@ class ImplMeteoIt(AbstractMeteo):
                     currMeteo = DayMeteo()
                     #currMeteo.giorno = day
                     currMeteo.ora = ore[i].find('h4').get_text(strip=True).strip()
-                    currMeteo.label = labels[i].find('span').get_text(strip=True).strip()
-                    #currMeteo.svg = str(labels[i].find('svg'))
+                    label = labels[i].find('span').get_text(strip=True).strip()
+                    currMeteo.setLabel(label, currMeteo.ora)
                     
                     currMeteo.temperatura_value = temperature[i + 1].get_text(strip=True).strip().encode('ascii','ignore')
                     currMeteo.temperatura = currMeteo.temperatura_value + u'\N{DEGREE SIGN}' + " C"
@@ -84,24 +83,4 @@ class ImplMeteoIt(AbstractMeteo):
             traceback.print_exc(file=sys.stdout)
         finally:             
             return result
-    
-    def get_meteo_week(self, parsed_html):
-        result = []
-        myTime = datetime.datetime.now()
-        
-        weekDays = parsed_html.body.find_all('div', attrs={'class':'pk_item_menu'})
-        for day in weekDays:
-            weekMeteo = WeekMeteo()
-            label = myTime.strftime("%a %d %b")
-            myTime = myTime + datetime.timedelta(days=1)
-            minime = day.find('p', attrs={'class':'icon-max'})
-            massime = day.find('p', attrs={'class':'icon-min'})
-            svg = day.find('svg')
-            
-            weekMeteo.label_giorno = label
-            weekMeteo.minime = minime.get_text(strip=True).strip()
-            weekMeteo.massime = massime.get_text(strip=True).strip()
-            weekMeteo.svg = str(svg)
-            result.append(weekMeteo.__dict__)
-        return result
     

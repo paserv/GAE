@@ -28,3 +28,5 @@ Aggiustare Web Scraping 3bmeteo
 Grafici pioggia/temperatura
 
 Statistiche visualizzazione
+
+Tasto condividi
